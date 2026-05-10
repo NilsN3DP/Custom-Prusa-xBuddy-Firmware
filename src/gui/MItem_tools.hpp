@@ -164,6 +164,48 @@ public:
     virtual void OnChange(size_t old_index) override;
 };
 
+class MI_UI_ACCENT_COLOR : public MenuItemSwitch {
+public:
+    MI_UI_ACCENT_COLOR();
+    virtual void OnChange(size_t old_index) override;
+};
+
+class MI_UI_THEME_PRESET : public MenuItemSwitch {
+public:
+    MI_UI_THEME_PRESET();
+    virtual void OnChange(size_t old_index) override;
+};
+
+class MI_UI_BACKGROUND_COLOR : public MenuItemSwitch {
+public:
+    MI_UI_BACKGROUND_COLOR();
+    virtual void OnChange(size_t old_index) override;
+};
+
+class MI_UI_CUSTOM_HUE : public WiSpin {
+    constexpr static const char *const label = N_("Custom Hue");
+
+public:
+    MI_UI_CUSTOM_HUE();
+    virtual void OnClick() override;
+};
+
+class MI_UI_CUSTOM_SATURATION : public WiSpin {
+    constexpr static const char *const label = N_("Custom Saturation");
+
+public:
+    MI_UI_CUSTOM_SATURATION();
+    virtual void OnClick() override;
+};
+
+class MI_UI_CUSTOM_VALUE : public WiSpin {
+    constexpr static const char *const label = N_("Custom Brightness");
+
+public:
+    MI_UI_CUSTOM_VALUE();
+    virtual void OnClick() override;
+};
+
 class MI_SOUND_VOLUME : public WiSpin {
     constexpr static const char *const label = N_("Sound Volume");
 

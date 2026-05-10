@@ -17,6 +17,7 @@
 #include <module/temperature.h>
 #include <config.h>
 #include <sound_enum.h>
+#include <gui_theme.hpp>
 #include <footer_eeprom.hpp>
 #include <time_tools.hpp>
 #include <encoded_filament.hpp>
@@ -221,6 +222,12 @@ struct CurrentStore
     StoreItem<uint8_t, defaults::sound_volume, ItemFlag::user_interface, journal::hash("Sound Volume")> sound_volume;
     StoreItem<uint16_t, defaults::language, ItemFlag::user_interface, journal::hash("Language")> language;
     StoreItem<uint8_t, 0, ItemFlag::user_interface, journal::hash("File Sort")> file_sort; // filebrowser file sort options
+    StoreItem<gui::theme::ThemePreset, gui::theme::default_preset, ItemFlag::user_interface, journal::hash("UI Theme Preset")> ui_theme_preset;
+    StoreItem<gui::theme::AccentColor, gui::theme::default_accent, ItemFlag::user_interface, journal::hash("UI Accent Color")> ui_accent_color;
+    StoreItem<gui::theme::BackgroundColor, gui::theme::default_background, ItemFlag::user_interface, journal::hash("UI Background Color")> ui_background_color;
+    StoreItem<uint16_t, 169, ItemFlag::user_interface, journal::hash("UI Custom Hue")> ui_custom_hue;
+    StoreItem<uint8_t, 100, ItemFlag::user_interface, journal::hash("UI Custom Saturation")> ui_custom_saturation;
+    StoreItem<uint8_t, 56, ItemFlag::user_interface, journal::hash("UI Custom Value")> ui_custom_value;
     StoreItem<bool, true, ItemFlag::user_interface, journal::hash("Menu Timeout")> menu_timeout; // on / off menu timeout flag
     StoreItem<bool, true, ItemFlag::user_interface, journal::hash("Devhash in QR")> devhash_in_qr; // on / off sending UID in QR
 

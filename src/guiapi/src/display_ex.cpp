@@ -39,8 +39,8 @@ void clear(const Color clr) {
 
 } // namespace display
 
-static inline void draw_qoi_ex_C(point_ui16_t pt, AbstractByteReader &reader, Color back_color, ropfn rop) {
-    st7789v_draw_qoi_ex(pt, reader, back_color, rop.ConvertToC());
+static inline void draw_qoi_ex_C(point_ui16_t pt, AbstractByteReader &reader, Color back_color, uint8_t rop) {
+    st7789v_draw_qoi_ex(pt, reader, back_color, rop);
 }
 
 static inline void set_pixel_colorFormatNative(uint16_t point_x, uint16_t point_y, uint32_t nativeclr) {
@@ -84,8 +84,8 @@ void clear(const Color clr) {
 
 } // namespace display
 
-static inline void draw_qoi_ex_C(point_ui16_t pt, AbstractByteReader &reader, Color back_color, ropfn rop) {
-    ili9488_draw_qoi_ex(pt, reader, back_color, rop.ConvertToC());
+static inline void draw_qoi_ex_C(point_ui16_t pt, AbstractByteReader &reader, Color back_color, uint8_t rop) {
+    ili9488_draw_qoi_ex(pt, reader, back_color, rop);
 }
 
 static inline void set_pixel_colorFormatNative(uint16_t point_x, uint16_t point_y, uint32_t nativeclr) {
@@ -140,7 +140,7 @@ void clear(const Color clr) {
 
 } // namespace display
 
-static inline void draw_qoi_ex_C(point_ui16_t pt, AbstractByteReader &reader, Color back_color, ropfn rop) {
+static inline void draw_qoi_ex_C(point_ui16_t pt, AbstractByteReader &reader, Color back_color, uint8_t rop) {
     // todo
 }
 
@@ -502,11 +502,11 @@ void draw_img(point_ui16_t pt, const img::Resource &qoi, Color back_color, ropfn
     // Seek to the beginning of the image and draw
     ::lseek(resource_fd, qoi.offset, SEEK_SET);
     ResourceFileReader reader;
-    draw_qoi_ex_C(pt, reader, back_color, rop);
+    draw_qoi_ex_C(pt, reader, back_color, rop.ConvertToC() | ROPFN_THEME);
 }
 
 void draw_img(point_ui16_t pt, AbstractByteReader &reader) {
-    draw_qoi_ex_C(pt, reader, COLOR_BLACK, ropfn());
+    draw_qoi_ex_C(pt, reader, COLOR_BLACK, ROPFN_COPY);
 }
 
 void draw_text(Rect16 rc, const string_view_utf8 &str, const Font font, Color clr_bg, Color clr_fg) {

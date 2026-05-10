@@ -7,6 +7,7 @@
 #include "display.hpp"
 #include "marlin_client.hpp"
 #include "knob_event.hpp"
+#include <gui_theme.hpp>
 
 bool window_t::IsVisible() const { return flags.visible && !flags.hidden_behind_dialog; }
 bool window_t::HasVisibleFlag() const { return flags.visible; };
@@ -185,6 +186,9 @@ void window_t::set_shadow(bool set) {
 Color window_t::GetBackColor() const {
     if (flags.color_scheme_background && pBackColorScheme) {
         return pBackColorScheme->Get(IsFocused(), IsShadowed());
+    }
+    if (color_back == GuiDefaults::ColorBack) {
+        return gui::theme::background_color();
     }
     return color_back;
 }

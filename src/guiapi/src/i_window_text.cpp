@@ -5,10 +5,14 @@
  */
 #include "i_window_text.hpp"
 #include "gui.hpp"
+#include <gui_theme.hpp>
 
 Color IWindowText::GetTextColor() const {
     if (flags.color_scheme_foreground && pTextColorScheme) {
         return pTextColorScheme->Get(IsFocused(), IsShadowed());
+    }
+    if (color_text == GuiDefaults::ColorText || color_text == GuiDefaults::COLOR_VALUE_VALID) {
+        return gui::theme::text_color();
     }
     return color_text;
 }

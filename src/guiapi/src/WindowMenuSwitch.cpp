@@ -1,4 +1,5 @@
 #include "WindowMenuSwitch.hpp"
+#include <gui_theme.hpp>
 
 MenuItemSwitch::MenuItemSwitch(const string_view_utf8 &label, const std::span<const char *const> &items, size_t initial_index)
     : IWindowMenuItem(label)
@@ -55,20 +56,20 @@ Rect16 MenuItemSwitch::getRightBracketRect(Rect16 extension_rect) const {
     return extension_rect;
 }
 
-void MenuItemSwitch::printExtension(Rect16 extension_rect, Color color_text, Color color_back, [[maybe_unused]] ropfn raster_op) const {
+void MenuItemSwitch::printExtension(Rect16 extension_rect, [[maybe_unused]] Color color_text, Color color_back, [[maybe_unused]] ropfn raster_op) const {
     // draw switch
     render_text_align(getSwitchRect(extension_rect), current_item_text(), GuiDefaults::FontMenuItems, color_back,
-        (IsFocused() && IsEnabled()) ? GuiDefaults::ColorSelected : color_text,
+        gui::theme::menu_value_text_color(IsFocused() && IsEnabled()),
         padding_ui8(0, 4, 0, 0), Align_t::Center(), false);
 
     // draw brackets
     if (has_brackets) {
         render_text_align(getLeftBracketRect(extension_rect), string_view_utf8::MakeCPUFLASH("["), BracketFont,
-            color_back, IsFocused() ? COLOR_DARK_GRAY : COLOR_SILVER, GuiDefaults::MenuPaddingSpecial, Align_t::Center(), false);
+            color_back, gui::theme::menu_value_text_color(IsFocused()), GuiDefaults::MenuPaddingSpecial, Align_t::Center(), false);
 
         // draw bracket end  TODO: Change font
         render_text_align(getRightBracketRect(extension_rect), string_view_utf8::MakeCPUFLASH("]"), BracketFont,
-            color_back, IsFocused() ? COLOR_DARK_GRAY : COLOR_SILVER, GuiDefaults::MenuPaddingSpecial, Align_t::Center(), false);
+            color_back, gui::theme::menu_value_text_color(IsFocused()), GuiDefaults::MenuPaddingSpecial, Align_t::Center(), false);
     }
 }
 

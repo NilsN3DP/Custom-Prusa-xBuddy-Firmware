@@ -7,6 +7,7 @@
 #include <marlin_client.hpp>
 #include <dialog_text_input.hpp>
 #include <utils/string_builder.hpp>
+#include <gui_theme.hpp>
 
 void MI_SHEET_OFFSET::printExtension(Rect16 extension_rect, Color color_text, Color color_back, ropfn raster_op) const {
     if (calib) {
@@ -15,7 +16,7 @@ void MI_SHEET_OFFSET::printExtension(Rect16 extension_rect, Color color_text, Co
 
         auto stringView = _(notCalibrated);
         render_text_align(extension_rect, stringView, InfoFont, color_back,
-            (IsFocused() && IsEnabled()) ? COLOR_DARK_GRAY : COLOR_SILVER, GuiDefaults::MenuPaddingItems, Align_t::RightCenter());
+            gui::theme::menu_value_text_color(IsFocused() && IsEnabled()), GuiDefaults::MenuPaddingItems, Align_t::RightCenter());
     }
 }
 

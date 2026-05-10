@@ -5,6 +5,7 @@
  */
 
 #include "WindowMenuInfo.hpp"
+#include <gui_theme.hpp>
 
 IWiInfo::IWiInfo(const string_view_utf8 &value, const string_view_utf8 &label, const img::Resource *id_icon, is_enabled_t enabled, is_hidden_t hidden)
     : IWindowMenuItem(label, 0, id_icon, enabled, hidden)
@@ -34,7 +35,7 @@ void IWiInfo::update_extension_width() {
 }
 
 void IWiInfo::printExtension(Rect16 extension_rect, [[maybe_unused]] Color color_text, Color color_back, [[maybe_unused]] ropfn raster_op) const {
-    render_text_align(extension_rect, value(), font, color_back, IsFocused() ? COLOR_DARK_GRAY : COLOR_SILVER, GuiDefaults::MenuPaddingSpecial, Align_t::RightCenter());
+    render_text_align(extension_rect, value(), font, color_back, gui::theme::menu_value_text_color(IsFocused()), GuiDefaults::MenuPaddingSpecial, Align_t::RightCenter());
 }
 
 void WiInfoString::set_value(const string_view_utf8 &set) {

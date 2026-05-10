@@ -7,6 +7,7 @@
 #include "WindowMenuSpin.hpp"
 
 #include <utils/string_builder.hpp>
+#include <gui_theme.hpp>
 
 #if HAS_TOUCH()
     #include <dialog_numeric_input.hpp>
@@ -84,7 +85,7 @@ static constexpr Font TheFont = GuiDefaults::MenuSpinHasUnits ? GuiDefaults::Fon
 void WiSpin::printExtension(Rect16 extension_rect, Color color_text, Color color_back, [[maybe_unused]] ropfn raster_op) const {
 
     const string_view_utf8 spin_txt = string_view_utf8::MakeRAM(text_buffer_.data());
-    const Color cl_txt = is_edited() ? COLOR_BRAND : color_text;
+    const Color cl_txt = is_edited() ? gui::theme::focus_indicator_color() : color_text;
     const Align_t align = Align_t::RightTop(); // This have to be aligned this way and set up with padding, because number and units have different fonts
     padding_ui8_t extension_padding = Padding;
     if constexpr (GuiDefaults::MenuSpinHasUnits) {
@@ -113,7 +114,7 @@ void WiSpin::printExtension(Rect16 extension_rect, Color color_text, Color color
         const unichar Utf8Char = un.getFirstUtf8Char();
         padding_ui8_t unit_padding = extension_padding;
         unit_padding.left = Utf8Char == 0xB0 ? 0 : unit__half_space_padding;
-        render_text_align(unit_rc, un, TheFont, color_back, IsFocused() ? COLOR_DARK_GRAY : COLOR_SILVER, unit_padding, align); // render unit
+        render_text_align(unit_rc, un, TheFont, color_back, gui::theme::menu_value_text_color(IsFocused()), unit_padding, align); // render unit
     }
 }
 
