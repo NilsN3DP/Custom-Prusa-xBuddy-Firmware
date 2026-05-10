@@ -35,7 +35,7 @@ void SideStripHandler::update() {
     const uint32_t time_ms = ticks_ms();
 
     auto &controller = controller_instance();
-    if (custom_color && time_ms - custom_color->start_ms < custom_color->duration_ms) {
+    if (custom_color && (custom_color->duration_ms == 0 || time_ms - custom_color->start_ms < custom_color->duration_ms)) {
         change_state(SideStripState::custom_color);
     } else {
         custom_color.reset();
