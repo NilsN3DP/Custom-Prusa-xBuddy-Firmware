@@ -1,6 +1,7 @@
 #include "display_helper.h"
 #include "display.hpp"
 #include <cmath>
+#include <gui_theme.hpp>
 #include <guiconfig/guiconfig.h>
 #include <img_resources.hpp>
 #include "display_math_helper.h"
@@ -506,7 +507,7 @@ void draw_img(point_ui16_t pt, const img::Resource &qoi, Color back_color, ropfn
 }
 
 void draw_img(point_ui16_t pt, AbstractByteReader &reader) {
-    draw_qoi_ex_C(pt, reader, COLOR_BLACK, ROPFN_COPY);
+    draw_qoi_ex_C(pt, reader, gui::theme::background_color(), ROPFN_THEME_PREVIEW);
 }
 
 void draw_text(Rect16 rc, const string_view_utf8 &str, const Font font, Color clr_bg, Color clr_fg) {

@@ -5,6 +5,7 @@
 #include "window_thumbnail.hpp"
 #include "gcode_reader_interface.hpp"
 #include "display.hpp"
+#include <gui_theme.hpp>
 
 //-------------------------- Thumbnail --------------------------------------
 
@@ -19,6 +20,7 @@ WindowPreviewThumbnail::WindowPreviewThumbnail(window_t *parent, Rect16 rect)
 }
 
 void WindowPreviewThumbnail::unconditionalDraw() {
+    display::draw_rect(GetRect(), gui::theme::background_color());
     gcode_reader = AnyGcodeFormatReader { GCodeInfo::getInstance().GetGcodeFilepath() };
     if (!gcode_reader.is_open()) {
         return;
@@ -44,6 +46,7 @@ Rect16::Left_t WindowProgressThumbnail::get_old_left() {
 }
 
 void WindowProgressThumbnail::unconditionalDraw() {
+    display::draw_rect(GetRect(), gui::theme::background_color());
     if (!gcode_reader.is_open()) {
         return;
     }
