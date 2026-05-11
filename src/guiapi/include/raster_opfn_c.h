@@ -13,4 +13,5 @@ enum {
     ROPFN_DESATURATE = 0x10, // desaturate (color average)
     ROPFN_THEME = 0x20, // remap source theme accent to the selected UI accent
     ROPFN_THEME_PREVIEW = 0x40, // remap slicer preview background/accent to UI theme colors
+    ROPFN_THEME_NEUTRAL_CONTRAST = 0x80, // remap neutral icon strokes for themed menu contrast
 };

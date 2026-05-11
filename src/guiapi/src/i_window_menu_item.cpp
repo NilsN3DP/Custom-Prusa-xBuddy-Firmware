@@ -221,6 +221,7 @@ void IWindowMenuItem::Print(Rect16 rect) {
     } else {
         raster_op.shadow = IsEnabled() ? is_shadowed::no : is_shadowed::yes;
         raster_op.swap_bw = has_swapped_bw::no;
+        raster_op.theme_neutral_contrast = has_theme_neutral_contrast::yes;
     }
 
     const Rect16 item_rect = rect;

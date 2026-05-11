@@ -33,11 +33,17 @@ enum class is_desaturated : bool {
     yes
 };
 
+enum class has_theme_neutral_contrast : bool {
+    no,
+    yes
+};
+
 struct ropfn {
     is_inverted invert : 1 = is_inverted::no;
     has_swapped_bw swap_bw : 1 = has_swapped_bw::no;
     is_shadowed shadow : 1 = is_shadowed::no;
     is_desaturated desatur : 1 = is_desaturated::no;
+    has_theme_neutral_contrast theme_neutral_contrast : 1 = has_theme_neutral_contrast::no;
 
     constexpr uint8_t ConvertToC() const {
         uint8_t ret = 0;
@@ -52,6 +58,9 @@ struct ropfn {
         }
         if (desatur == is_desaturated::yes) {
             ret |= ROPFN_DESATURATE;
+        }
+        if (theme_neutral_contrast == has_theme_neutral_contrast::yes) {
+            ret |= ROPFN_THEME_NEUTRAL_CONTRAST;
         }
 
         return ret;

@@ -157,13 +157,13 @@ namespace transform {
         return pixel;
     }
 
-    Pixel theme(Pixel pixel) {
+    Pixel theme(Pixel pixel, bool neutral_contrast) {
         if (gui::theme::is_source_icon_accent(pixel.r, pixel.g, pixel.b)) {
             const Color remapped = gui::theme::remap_source_icon_accent(pixel.r, pixel.g, pixel.b);
             pixel.r = remapped.r;
             pixel.g = remapped.g;
             pixel.b = remapped.b;
-        } else if (tolerance(pixel)) {
+        } else if (neutral_contrast && tolerance(pixel)) {
             const uint8_t luma = pixel.r;
             if (luma >= 96) {
                 const Color remapped = gui::theme::icon_neutral_color(luma);
@@ -204,7 +204,7 @@ namespace transform {
         }
 
         if (rop & ROPFN_THEME) {
-            pixel = theme(pixel);
+            pixel = theme(pixel, rop & ROPFN_THEME_NEUTRAL_CONTRAST);
         }
 
         if (rop & ROPFN_INVERT) {
