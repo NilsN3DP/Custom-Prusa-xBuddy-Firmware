@@ -163,6 +163,14 @@ namespace transform {
             pixel.r = remapped.r;
             pixel.g = remapped.g;
             pixel.b = remapped.b;
+        } else if (tolerance(pixel)) {
+            const uint8_t luma = pixel.r;
+            if (luma >= 96) {
+                const Color remapped = gui::theme::icon_neutral_color(luma);
+                pixel.r = remapped.r;
+                pixel.g = remapped.g;
+                pixel.b = remapped.b;
+            }
         }
         return pixel;
     }

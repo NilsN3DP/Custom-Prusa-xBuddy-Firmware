@@ -256,6 +256,16 @@ Color focus_indicator_color() {
     return contrast_text_color(selected_background);
 }
 
+Color icon_neutral_color(uint8_t source_luma) {
+    const Color foreground = text_color();
+    const uint16_t scale = std::max<uint8_t>(source_luma, 40);
+
+    return Color::from_rgb(
+        uint8_t(uint16_t(foreground.r) * scale / 255),
+        uint8_t(uint16_t(foreground.g) * scale / 255),
+        uint8_t(uint16_t(foreground.b) * scale / 255));
+}
+
 Color custom_accent_color() {
     return hsv_to_rgb(config_store().ui_custom_hue.get(), config_store().ui_custom_saturation.get(), config_store().ui_custom_value.get());
 }

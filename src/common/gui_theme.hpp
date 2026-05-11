@@ -60,6 +60,7 @@ Color secondary_text_color();
 Color disabled_text_color();
 Color separator_color();
 Color focus_indicator_color();
+Color icon_neutral_color(uint8_t source_luma);
 Color custom_accent_color();
 void set_custom_hue(uint16_t hue);
 void set_custom_saturation(uint8_t saturation);
