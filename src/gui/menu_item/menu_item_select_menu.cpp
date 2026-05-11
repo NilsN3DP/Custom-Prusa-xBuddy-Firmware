@@ -128,16 +128,16 @@ void MenuItemSelectMenu::printExtension(Rect16 extension_rect, [[maybe_unused]] 
         const auto bracket_color = gui::theme::menu_value_text_color(IsFocused() && IsEnabled());
 
         const auto rct1 = Rect16::fromLTWH(extension_rect.Left(), extension_rect.Top(), font_w, extension_rect.Height());
-        render_text_align(rct1, string_view_utf8::MakeCPUFLASH("["), value_font, color_back, bracket_color, {}, Align_t::Center(), false);
+        render_text_align(rct1, string_view_utf8::MakeCPUFLASH("["), value_font, color_back, bracket_color, {}, Align_t::Center(), true);
 
         const auto rct2 = Rect16::fromLTWH(extension_rect.Right() - font_w, extension_rect.Top(), font_w, extension_rect.Height());
-        render_text_align(rct2, string_view_utf8::MakeCPUFLASH("]"), value_font, color_back, bracket_color, {}, Align_t::Center(), false);
+        render_text_align(rct2, string_view_utf8::MakeCPUFLASH("]"), value_font, color_back, bracket_color, {}, Align_t::Center(), true);
 
         extension_rect = Rect16::fromLTRB(extension_rect.Left() + font_w, extension_rect.Top(), extension_rect.EndPoint().x - font_w, extension_rect.EndPoint().y);
     }
 
     const auto text_color = gui::theme::menu_value_text_color(IsFocused() && IsEnabled());
-    render_text_align(extension_rect, string_view_utf8::MakeRAM(value_text_.data()), value_font, color_back, text_color, {}, Align_t::Center(), false);
+    render_text_align(extension_rect, string_view_utf8::MakeRAM(value_text_.data()), value_font, color_back, text_color, {}, Align_t::Center(), true);
 }
 
 void MenuItemSelectMenu::click(IWindowMenu &menu) {

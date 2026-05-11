@@ -60,16 +60,16 @@ void MenuItemSwitch::printExtension(Rect16 extension_rect, [[maybe_unused]] Colo
     // draw switch
     render_text_align(getSwitchRect(extension_rect), current_item_text(), GuiDefaults::FontMenuItems, color_back,
         gui::theme::menu_value_text_color(IsFocused() && IsEnabled()),
-        padding_ui8(0, 4, 0, 0), Align_t::Center(), false);
+        padding_ui8(0, 4, 0, 0), Align_t::Center(), true);
 
     // draw brackets
     if (has_brackets) {
         render_text_align(getLeftBracketRect(extension_rect), string_view_utf8::MakeCPUFLASH("["), BracketFont,
-            color_back, gui::theme::menu_value_text_color(IsFocused()), GuiDefaults::MenuPaddingSpecial, Align_t::Center(), false);
+            color_back, gui::theme::menu_value_text_color(IsFocused() && IsEnabled()), GuiDefaults::MenuPaddingSpecial, Align_t::Center(), true);
 
         // draw bracket end  TODO: Change font
         render_text_align(getRightBracketRect(extension_rect), string_view_utf8::MakeCPUFLASH("]"), BracketFont,
-            color_back, gui::theme::menu_value_text_color(IsFocused()), GuiDefaults::MenuPaddingSpecial, Align_t::Center(), false);
+            color_back, gui::theme::menu_value_text_color(IsFocused() && IsEnabled()), GuiDefaults::MenuPaddingSpecial, Align_t::Center(), true);
     }
 }
 

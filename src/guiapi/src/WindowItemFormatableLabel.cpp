@@ -12,5 +12,5 @@ void WI_LAMBDA_LABEL_t::printExtension(Rect16 extension_rect, [[maybe_unused]] C
     std::array<char, GuiDefaults::infoDefaultLen> text;
     printAs(text);
     render_text_align(extension_rect, string_view_utf8::MakeRAM(text.data()), InfoFont, color_back,
-        gui::theme::menu_value_text_color(IsFocused() && IsEnabled()), GuiDefaults::MenuPaddingItems, Align_t::RightCenter(), false);
+        gui::theme::menu_value_text_color(IsFocused() && IsEnabled()), GuiDefaults::MenuPaddingItems, Align_t::RightCenter(), true);
 }

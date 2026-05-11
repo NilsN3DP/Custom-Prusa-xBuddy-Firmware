@@ -250,7 +250,7 @@ void IWindowMenu::draw() {
         item->Print(rect);
 
         if constexpr (GuiDefaults::MenuLinesBetweenItems) {
-            if (flags.invalid_background && slot < visible_slot_count - 1) {
+            if (slot < visible_slot_count - 1) {
                 display::draw_line(point_ui16(Left() + GuiDefaults::MenuItemDelimiterPadding.left, rect.Top() + rect.Height()),
                     point_ui16(Left() + Width() - GuiDefaults::MenuItemDelimiterPadding.right, rect.Top() + rect.Height()), gui::theme::separator_color());
             }
