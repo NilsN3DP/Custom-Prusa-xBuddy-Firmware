@@ -14,6 +14,10 @@ Color IWindowText::GetTextColor() const {
     if (color_text == GuiDefaults::ColorText || color_text == GuiDefaults::COLOR_VALUE_VALID) {
         return gui::theme::text_color();
     }
+    if (color_text == COLOR_GRAY || color_text == COLOR_SILVER || color_text == COLOR_LIGHT_GRAY || color_text == COLOR_DARK_GRAY
+        || color_text == GuiDefaults::COLOR_VALUE_INVALID) {
+        return gui::theme::secondary_text_color();
+    }
     return color_text;
 }
 

@@ -5,6 +5,7 @@
 #include "window_menu_bar.hpp"
 
 #include "display.hpp"
+#include <gui_theme.hpp>
 
 MenuScrollbar::MenuScrollbar(window_t *parent, Rect16 rect, IWindowMenu &menu)
     : window_t(parent, rect)
@@ -27,7 +28,7 @@ void MenuScrollbar::unconditionalDraw() {
     }
 
     // Draw bar
-    display::fill_rect(Rect16(available_rect.Left(), available_rect.Top() + bar_offset, available_rect.Width(), bar_height), COLOR_SILVER);
+    display::fill_rect(Rect16(available_rect.Left(), available_rect.Top() + bar_offset, available_rect.Width(), bar_height), gui::theme::focus_indicator_color());
 
     // Draw background below bar
     if (const auto y_start = bar_offset + bar_height; y_start < available_rect.Height()) {

@@ -7,6 +7,7 @@
 #include "scroll_bar.hpp"
 
 #include "display.hpp"
+#include <gui_theme.hpp>
 
 ScrollBar::ScrollBar(window_t *parrent, Rect16::Width_t w)
     : window_t(parrent, calculateRect(parrent->GetRect(), w)) {
@@ -49,5 +50,5 @@ void ScrollBar::unconditionalDraw() {
     rc = Rect16::Height_t(bar_size);
     rc += Rect16::Top_t(offset_scaled);
 
-    display::draw_rect(rc, COLOR_SILVER);
+    display::draw_rect(rc, gui::theme::focus_indicator_color());
 }

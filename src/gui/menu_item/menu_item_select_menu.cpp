@@ -1,5 +1,6 @@
 #include "menu_item_select_menu.hpp"
 
+#include <gui_theme.hpp>
 #include <gui/ScreenHandler.hpp>
 #include <window_menu_adv.hpp>
 
@@ -114,7 +115,7 @@ void MenuItemSelectMenu::force_set_current_item(int set) {
     InValidateExtension();
 }
 
-void MenuItemSelectMenu::printExtension(Rect16 extension_rect, Color color_text, Color color_back, [[maybe_unused]] ropfn raster_op) const {
+void MenuItemSelectMenu::printExtension(Rect16 extension_rect, [[maybe_unused]] Color color_text, Color color_back, [[maybe_unused]] ropfn raster_op) const {
     if (current_item_ < 0 || current_item_ >= item_count()) {
         return;
     }
@@ -124,7 +125,7 @@ void MenuItemSelectMenu::printExtension(Rect16 extension_rect, Color color_text,
     // extension_rect = Rect16::fromLTWH(extension_rect.Left(), extension_rect.Top(), extension_rect.Width(), extension_rect.Height() - 4);
 
     if constexpr (GuiDefaults::MenuSwitchHasBrackets) {
-        const auto bracket_color = (IsFocused() && IsEnabled()) ? COLOR_DARK_GRAY : COLOR_SILVER;
+        const auto bracket_color = gui::theme::menu_value_text_color(IsFocused() && IsEnabled());
 
         const auto rct1 = Rect16::fromLTWH(extension_rect.Left(), extension_rect.Top(), font_w, extension_rect.Height());
         render_text_align(rct1, string_view_utf8::MakeCPUFLASH("["), value_font, color_back, bracket_color, {}, Align_t::Center(), false);
@@ -135,7 +136,7 @@ void MenuItemSelectMenu::printExtension(Rect16 extension_rect, Color color_text,
         extension_rect = Rect16::fromLTRB(extension_rect.Left() + font_w, extension_rect.Top(), extension_rect.EndPoint().x - font_w, extension_rect.EndPoint().y);
     }
 
-    const auto text_color = (IsFocused() && IsEnabled()) ? GuiDefaults::ColorSelected : color_text;
+    const auto text_color = gui::theme::menu_value_text_color(IsFocused() && IsEnabled());
     render_text_align(extension_rect, string_view_utf8::MakeRAM(value_text_.data()), value_font, color_back, text_color, {}, Align_t::Center(), false);
 }
 

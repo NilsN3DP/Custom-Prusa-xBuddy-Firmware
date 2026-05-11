@@ -193,10 +193,10 @@ Color selected_background_color() {
     case BackgroundColor::dark_gray:
         return COLOR_BLACK;
     case BackgroundColor::light_gray:
-        return COLOR_SILVER;
+        return Color::from_raw(0x008A8A8A);
     case BackgroundColor::white:
     default:
-        return COLOR_VERY_LIGHT_GRAY;
+        return Color::from_raw(0x00DDEEEB);
     }
 }
 
@@ -206,6 +206,45 @@ Color selected_text_color() {
 
 Color menu_value_text_color(bool focused) {
     return focused ? selected_text_color() : text_color();
+}
+
+Color secondary_text_color() {
+    switch (background()) {
+    case BackgroundColor::black:
+        return COLOR_SILVER;
+    case BackgroundColor::dark_gray:
+        return COLOR_VERY_LIGHT_GRAY;
+    case BackgroundColor::light_gray:
+    case BackgroundColor::white:
+    default:
+        return COLOR_DARK_GRAY;
+    }
+}
+
+Color disabled_text_color() {
+    switch (background()) {
+    case BackgroundColor::black:
+    case BackgroundColor::dark_gray:
+        return COLOR_LIGHT_GRAY;
+    case BackgroundColor::light_gray:
+    case BackgroundColor::white:
+    default:
+        return COLOR_DARK_GRAY;
+    }
+}
+
+Color separator_color() {
+    switch (background()) {
+    case BackgroundColor::black:
+        return COLOR_DARK_GRAY;
+    case BackgroundColor::dark_gray:
+        return COLOR_GRAY;
+    case BackgroundColor::light_gray:
+        return Color::from_raw(0x006D6D6D);
+    case BackgroundColor::white:
+    default:
+        return COLOR_LIGHT_GRAY;
+    }
 }
 
 Color focus_indicator_color() {

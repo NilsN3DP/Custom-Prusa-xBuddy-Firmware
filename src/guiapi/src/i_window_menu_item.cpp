@@ -226,15 +226,13 @@ void IWindowMenuItem::Print(Rect16 rect) {
     const Rect16 item_rect = rect;
     Color mi_color_back = GetBackColor();
     Color mi_color_text = GetTextColor();
+    const bool redraw_item = IsInvalid();
 
-    if (IsIconInvalid() && IsLabelInvalid() && IsExtensionInvalid()) {
+    if (redraw_item) {
         render_rounded_rect(rect, gui::theme::background_color(), mi_color_back, GuiDefaults::MenuItemCornerRadius, MIC_ALL_CORNERS);
         if (!clr_scheme && IsFocused() && IsEnabled()) {
             Rect16 accent_rect = item_rect;
-            accent_rect = Rect16::Width_t(5);
-            accent_rect += Rect16::Left_t(GuiDefaults::MenuItemCornerRadius);
-            accent_rect += Rect16::Top_t(4);
-            accent_rect -= Rect16::Height_t(8);
+            accent_rect = Rect16::Width_t(4);
             render_rect(accent_rect, gui::theme::focus_indicator_color());
         }
     }
@@ -243,7 +241,7 @@ void IWindowMenuItem::Print(Rect16 rect) {
     rect += Rect16::Left_t(GuiDefaults::MenuItemCornerRadius);
     rect -= Rect16::Width_t(2 * GuiDefaults::MenuItemCornerRadius);
 
-    if (IsIconInvalid()) {
+    if (redraw_item || IsIconInvalid()) {
         // Unnecessary invalidation of bg - use commented code if reprinting causes drawing artefacts
         // render_rounded_rect(getIconRect(rect), GuiDefaults::MenuColorBack, mi_color_back, GuiDefaults::MenuItemCornerRadius, MIC_TOP_LEFT | MIC_BOT_LEFT);
         printIcon(getIconRect(rect), raster_op, mi_color_back);
@@ -255,7 +253,7 @@ void IWindowMenuItem::Print(Rect16 rect) {
         focused_menu_item_roll.Init(label_rect, label, label_font, GuiDefaults::MenuPaddingItems);
     }
 
-    if (IsLabelInvalid()) {
+    if (redraw_item || IsLabelInvalid()) {
         if (is_focused()) {
             // Is focused -> use shared roll instance
             focused_menu_item_roll.render_text(label_rect, label, label_font, mi_color_back, mi_color_text, GuiDefaults::MenuPaddingItems, GuiDefaults::MenuAlignment());
@@ -266,7 +264,7 @@ void IWindowMenuItem::Print(Rect16 rect) {
         }
     }
 
-    if (IsExtensionInvalid() && extension_width && icon_position != IconPosition::replaces_extends && (IsEnabled() || DoesShowDisabledExtension())) {
+    if ((redraw_item || IsExtensionInvalid()) && extension_width && icon_position != IconPosition::replaces_extends && (IsEnabled() || DoesShowDisabledExtension())) {
         render_rect(getExtensionRect(rect), mi_color_back);
         printExtension(getExtensionRect(rect), mi_color_text, mi_color_back, raster_op);
     }
@@ -296,7 +294,7 @@ Color IWindowMenuItem::GetTextColor() const {
     } else if (IsEnabled()) {
         ret = gui::theme::text_color();
     } else {
-        ret = GuiDefaults::MenuColorDisabled;
+        ret = gui::theme::disabled_text_color();
     }
     return ret;
 }
@@ -312,7 +310,7 @@ Color IWindowMenuItem::GetBackColor() const {
     }
 
     if (IsFocused()) {
-        return IsEnabled() ? gui::theme::selected_background_color() : GuiDefaults::MenuColorDisabled;
+        return IsEnabled() ? gui::theme::selected_background_color() : gui::theme::background_color();
     }
     return gui::theme::background_color();
 }

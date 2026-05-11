@@ -114,7 +114,7 @@ void WiSpin::printExtension(Rect16 extension_rect, Color color_text, Color color
         const unichar Utf8Char = un.getFirstUtf8Char();
         padding_ui8_t unit_padding = extension_padding;
         unit_padding.left = Utf8Char == 0xB0 ? 0 : unit__half_space_padding;
-        render_text_align(unit_rc, un, TheFont, color_back, gui::theme::menu_value_text_color(IsFocused()), unit_padding, align); // render unit
+        render_text_align(unit_rc, un, TheFont, color_back, gui::theme::menu_value_text_color(IsFocused() && IsEnabled()), unit_padding, align); // render unit
     }
 }
 

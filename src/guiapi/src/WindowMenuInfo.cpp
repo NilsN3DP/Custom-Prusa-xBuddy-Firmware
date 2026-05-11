@@ -35,7 +35,7 @@ void IWiInfo::update_extension_width() {
 }
 
 void IWiInfo::printExtension(Rect16 extension_rect, [[maybe_unused]] Color color_text, Color color_back, [[maybe_unused]] ropfn raster_op) const {
-    render_text_align(extension_rect, value(), font, color_back, gui::theme::menu_value_text_color(IsFocused()), GuiDefaults::MenuPaddingSpecial, Align_t::RightCenter());
+    render_text_align(extension_rect, value(), font, color_back, gui::theme::menu_value_text_color(IsFocused() && IsEnabled()), GuiDefaults::MenuPaddingSpecial, Align_t::RightCenter());
 }
 
 void WiInfoString::set_value(const string_view_utf8 &set) {
