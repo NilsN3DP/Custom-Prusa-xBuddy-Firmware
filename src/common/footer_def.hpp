@@ -73,6 +73,7 @@ enum class Item : uint8_t { // stored in eeprom, must fit to footer::eeprom::val
     nozzle_pwm = 23,
     chamber_temp = 24,
     f_s_value_side = 25,
+    connect_name = 26,
     _count,
 };
 
@@ -86,6 +87,7 @@ inline constexpr std::array item_list {
         Item::sheets,
 #endif
         Item::nozzle_diameter,
+        Item::connect_name,
 
         // Temps
         Item::nozzle,

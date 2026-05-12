@@ -10,6 +10,7 @@
 #include "footer_def.hpp"
 #include "footer_item_axis.hpp"
 #include "footer_item_fans.hpp"
+#include "footer_item_connect_name.hpp"
 #include "footer_item_multitool.hpp"
 #include "footer_item_fsvalue.hpp"
 #include "footer_item_input_shaper.hpp"
@@ -80,6 +81,7 @@ using FooterItemMappings = TypeList< //
 #if HAS_CHAMBER_API()
     FooterItemMappingRec<FooterItemChamberTemperature, Item::chamber_temp>,
 #endif
+    FooterItemMappingRec<FooterItemConnectName, Item::connect_name>,
     FooterItemMappingRec<FooterItemNozzle, Item::nozzle>
     //
     >;

@@ -61,6 +61,7 @@ const char *footer::to_string(Item item) {
             nullptr
 #endif
         },
+        { Item::connect_name, N_("Connect name") },
     };
 
     return texts.get_fallback(item, Item::none);
