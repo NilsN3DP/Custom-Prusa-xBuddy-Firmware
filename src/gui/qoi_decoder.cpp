@@ -189,7 +189,7 @@ namespace transform {
 
         const bool slicer_orange = pixel.r > 120 && pixel.g > 35 && pixel.g < pixel.r && pixel.b < pixel.g && (max_channel - min_channel) > 80;
         if (slicer_orange || gui::theme::is_source_icon_accent(pixel.r, pixel.g, pixel.b)) {
-            const Color remapped = slicer_orange ? gui::theme::accent_color() : gui::theme::remap_source_icon_accent(pixel.r, pixel.g, pixel.b);
+            const Color remapped = slicer_orange ? COLOR_ORANGE : gui::theme::remap_source_icon_accent(pixel.r, pixel.g, pixel.b);
             pixel.r = remapped.r;
             pixel.g = remapped.g;
             pixel.b = remapped.b;
