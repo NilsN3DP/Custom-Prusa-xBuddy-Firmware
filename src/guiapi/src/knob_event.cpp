@@ -4,6 +4,7 @@
 
 #include "knob_event.hpp"
 #include "marlin_client.hpp" // marlin_client::notify_server_about_encoder_move
+#include "ScreenShot.hpp"
 #include "ScreenHandler.hpp" // GetCapturedWindow
 #include "sound.hpp"
 #include <option/has_side_leds.h>
@@ -95,6 +96,7 @@ bool gui::knob::EventEncoder(int diff) {
 
 bool gui::knob::EventClick(BtnState_t state) {
     static bool dont_click_on_next_release = false;
+    static bool screenshot_taken_on_current_hold = false;
     window_t *capture_ptr = Screens::Access()->Get()->GetCapturedWindow();
 
 #if HAS_SIDE_LEDS()
@@ -103,6 +105,7 @@ bool gui::knob::EventClick(BtnState_t state) {
 
     switch (state) {
     case BtnState_t::Pressed:
+        screenshot_taken_on_current_hold = false;
         Screens::Access()->ScreenEvent(nullptr, GUI_event_t::BTN_DN, 0);
         break;
     case BtnState_t::Released:
@@ -119,7 +122,9 @@ bool gui::knob::EventClick(BtnState_t state) {
         marlin_client::notify_server_about_knob_click();
         break;
     case BtnState_t::Held:
-        Sound_Play(eSOUND_TYPE::ButtonEcho);
+        dont_click_on_next_release = true;
+        screenshot_taken_on_current_hold = true;
+        Sound_Play(TakeAScreenshot() ? eSOUND_TYPE::ButtonEcho : eSOUND_TYPE::StandardAlert);
         break;
     case BtnState_t::HeldAndRight:
         dont_click_on_next_release = true;
@@ -141,6 +146,10 @@ bool gui::knob::EventClick(BtnState_t state) {
         break;
     case BtnState_t::HeldAndReleased:
         dont_click_on_next_release = true;
+        if (screenshot_taken_on_current_hold) {
+            screenshot_taken_on_current_hold = false;
+            break;
+        }
         // screen event will not resend this event to all subwindows
         Screens::Access()->ScreenEvent(nullptr, GUI_event_t::HELD_RELEASED, 0);
     }
