@@ -37,6 +37,7 @@ public:
     void turn_off_bed_leds();
     void set_rgbw_led(std::array<uint8_t, 4> rgbw);
     void set_progress_percent(uint8_t percent);
+    void set_progress_percent(uint8_t percent, std::array<uint8_t, 4> rgbw);
 
     // These are called from the puppy task.
     CommunicationStatus refresh();

@@ -4,8 +4,12 @@
 #include "PrusaGcodeSuite.hpp"
 #include "../../lib/Marlin/Marlin/src/gcode/parser.h"
 #include "leds/status_leds_handler.hpp"
+#include <option/has_ac_controller.h>
 #if HAS_SIDE_LEDS()
     #include "leds/side_strip_handler.hpp"
+#endif
+#if HAS_AC_CONTROLLER()
+    #include "leds/ac_controller_leds_handler.hpp"
 #endif
 #include <algorithm>
 #include <optional>
@@ -120,7 +124,7 @@ void PrusaGcodeSuite::M150() {
  *
  *#### Usage
  *
- *    M151 [ E | Q | I | M | R | G | B | W | H | S | V | D | T ]
+ *    M151 [ E | Q | I | M | R | G | B | W | H | S | V | A | P | D | T ]
  *
  *#### Parameters
  *
@@ -141,6 +145,8 @@ void PrusaGcodeSuite::M150() {
  * - `V` - Saturation form 0 to 100
  *
  * Effect
+ * - `A` - AC Controller bed LED effect, Core One L only: 0 = off, 1 = static color, 2 = progress/running effect
+ * - `P` - AC Controller progress percent, 0 to 100, used with `A2`
  * - `D` - duration in milliseconds, iX only: set to 0 for infinite duration
  * - `T` - transition in milliseconds (fade in / fade out)
  *
@@ -149,8 +155,9 @@ void PrusaGcodeSuite::M150() {
  * effect doesn't reach full color intensity.
  * Fade out is not counted toward duration.
  */
-#if HAS_SIDE_LEDS()
+#if HAS_SIDE_LEDS() || HAS_AC_CONTROLLER()
 void PrusaGcodeSuite::M151() {
+#if HAS_SIDE_LEDS()
     auto &side_strip = leds::SideStripHandler::instance();
 
     if (parser.seen('E')) {
@@ -171,14 +178,35 @@ void PrusaGcodeSuite::M151() {
             side_strip.set_dimming_enabled(static_cast<leds::DimmingEnabled>(dimming_mode));
         }
     }
+#endif
 
     auto color = parse_color();
+
+#if HAS_AC_CONTROLLER()
+    if (parser.seen('A')) {
+        const uint8_t effect = parser.byteval('A');
+        if (effect <= static_cast<uint8_t>(leds::AcControllerLedsHandler::CustomEffect::progress_percent)) {
+            const auto effect_color = color.value_or(leds::ColorRGBW { 0, 220, 190, 0 });
+            const uint8_t progress_percent = parser.byteval('P', 50);
+            const uint32_t duration = parser.ulongval('D', 400);
+
+            leds::AcControllerLedsHandler::set_custom_effect(
+                static_cast<leds::AcControllerLedsHandler::CustomEffect>(effect),
+                effect_color,
+                progress_percent,
+                duration);
+        }
+    }
+#endif
+
+#if HAS_SIDE_LEDS()
     if (color) {
         auto color_val = color.value();
         uint32_t duration = parser.ulongval('D', 400);
         uint32_t transition = parser.ulongval('T', 100);
         side_strip.set_custom_color(color_val, duration, transition);
     }
+#endif
 }
 
 /** @}*/
