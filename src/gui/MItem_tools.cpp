@@ -390,6 +390,7 @@ static constexpr EnumArray<gui::theme::ThemePreset, const char *, gui::theme::Th
     { gui::theme::ThemePreset::prusa_classic, N_("Prusa Classic") },
     { gui::theme::ThemePreset::oled_dark, N_("OLED Dark") },
     { gui::theme::ThemePreset::graphite_cyan, N_("Graphite Cyan") },
+    { gui::theme::ThemePreset::nasa, N_("NASA") },
 };
 
 MI_UI_THEME_PRESET::MI_UI_THEME_PRESET()
@@ -400,6 +401,26 @@ void MI_UI_THEME_PRESET::OnChange([[maybe_unused]] size_t old_index) {
     if (Screens::Access()->Get()) {
         Screens::Access()->Get()->Invalidate();
     }
+}
+
+MI_CFW_BRANDING::MI_CFW_BRANDING()
+    : WiInfo<12>(_(label), nullptr, is_enabled_t::yes, is_hidden_t::no) {
+    ChangeInformation("by N3DP_DE");
+}
+
+/*****************************************************************************/
+// MI_KNOB_HOLD_ACTION
+
+static constexpr const char *knob_hold_action_items[] = {
+    N_("Normal"),
+    N_("Screenshot"),
+};
+
+MI_KNOB_HOLD_ACTION::MI_KNOB_HOLD_ACTION()
+    : MenuItemSwitch(_("Knob Hold"), knob_hold_action_items, config_store().knob_hold_screenshot.get() ? 1 : 0) {}
+
+void MI_KNOB_HOLD_ACTION::OnChange([[maybe_unused]] size_t old_index) {
+    config_store().knob_hold_screenshot.set(get_index() == 1);
 }
 
 /*****************************************************************************/

@@ -228,6 +228,7 @@ struct CurrentStore
     StoreItem<uint16_t, 169, ItemFlag::user_interface, journal::hash("UI Custom Hue")> ui_custom_hue;
     StoreItem<uint8_t, 100, ItemFlag::user_interface, journal::hash("UI Custom Saturation")> ui_custom_saturation;
     StoreItem<uint8_t, 56, ItemFlag::user_interface, journal::hash("UI Custom Value")> ui_custom_value;
+    StoreItem<bool, true, ItemFlag::user_interface, journal::hash("Knob Hold Screenshot")> knob_hold_screenshot;
     StoreItem<bool, true, ItemFlag::user_interface, journal::hash("Menu Timeout")> menu_timeout; // on / off menu timeout flag
     StoreItem<bool, true, ItemFlag::user_interface, journal::hash("Devhash in QR")> devhash_in_qr; // on / off sending UID in QR
 

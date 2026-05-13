@@ -34,6 +34,7 @@ enum class ThemePreset : uint8_t {
     prusa_classic,
     oled_dark,
     graphite_cyan,
+    nasa,
     _count,
 };
 

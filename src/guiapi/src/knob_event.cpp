@@ -7,6 +7,7 @@
 #include "ScreenShot.hpp"
 #include "ScreenHandler.hpp" // GetCapturedWindow
 #include "sound.hpp"
+#include <config_store/store_instance.hpp>
 #include <option/has_side_leds.h>
 
 #if HAS_SIDE_LEDS()
@@ -123,8 +124,10 @@ bool gui::knob::EventClick(BtnState_t state) {
         break;
     case BtnState_t::Held:
         dont_click_on_next_release = true;
-        screenshot_taken_on_current_hold = true;
-        Sound_Play(TakeAScreenshot() ? eSOUND_TYPE::ButtonEcho : eSOUND_TYPE::StandardAlert);
+        if (config_store().knob_hold_screenshot.get()) {
+            screenshot_taken_on_current_hold = true;
+            Sound_Play(TakeAScreenshot() ? eSOUND_TYPE::ButtonEcho : eSOUND_TYPE::StandardAlert);
+        }
         break;
     case BtnState_t::HeldAndRight:
         dont_click_on_next_release = true;

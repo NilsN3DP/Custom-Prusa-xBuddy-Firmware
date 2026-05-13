@@ -176,6 +176,19 @@ public:
     virtual void OnChange(size_t old_index) override;
 };
 
+class MI_CFW_BRANDING : public WiInfo<12> {
+    static constexpr const char *const label = N_("CFW");
+
+public:
+    MI_CFW_BRANDING();
+};
+
+class MI_KNOB_HOLD_ACTION : public MenuItemSwitch {
+public:
+    MI_KNOB_HOLD_ACTION();
+    virtual void OnChange(size_t old_index) override;
+};
+
 class MI_UI_BACKGROUND_COLOR : public MenuItemSwitch {
 public:
     MI_UI_BACKGROUND_COLOR();

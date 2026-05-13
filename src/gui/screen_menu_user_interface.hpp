@@ -26,6 +26,7 @@
 
 using ScreenMenuUserInterface__ = ScreenMenu<GuiDefaults::MenuFooter, MI_RETURN,
     MI_FOOTER_SETTINGS, MI_SORT_FILES,
+    MI_CFW_BRANDING,
     MI_UI_THEME_PRESET,
     MI_UI_ACCENT_COLOR,
     MI_UI_CUSTOM_HUE, MI_UI_CUSTOM_SATURATION, MI_UI_CUSTOM_VALUE,
@@ -45,6 +46,7 @@ using ScreenMenuUserInterface__ = ScreenMenu<GuiDefaults::MenuFooter, MI_RETURN,
 #if HAS_TOUCH()
     MI_ENABLE_TOUCH, TOUCH_SIG_WORKAROUND, MI_TOUCH_PLAYGROUND,
 #endif
+    MI_KNOB_HOLD_ACTION,
     MI_ALWAYS_HIDDEN>;
 
 class ScreenMenuUserInterface : public ScreenMenuUserInterface__ {

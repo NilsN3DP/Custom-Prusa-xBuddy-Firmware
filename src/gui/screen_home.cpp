@@ -234,7 +234,7 @@ screen_home_data_t::screen_home_data_t()
 #endif
         sb.append_string(version::project_version);
         sb.append_string(version::project_version_suffix_short);
-        sb.append_string(" CFW");
+        sb.append_string(" CFW by N3DP_DE");
 #if DEVELOPER_MODE()
         sb.append_string(" DEV");
 #endif

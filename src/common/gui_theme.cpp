@@ -145,6 +145,10 @@ void apply_preset(ThemePreset preset) {
         set_accent(AccentColor::blue);
         set_background(BackgroundColor::dark_gray);
         break;
+    case ThemePreset::nasa:
+        set_accent(AccentColor::red);
+        set_background(BackgroundColor::white);
+        break;
     case ThemePreset::light_mint:
     default:
         set_accent(AccentColor::filament_turquoise);
