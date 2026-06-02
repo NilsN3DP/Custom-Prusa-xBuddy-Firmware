@@ -13,7 +13,7 @@ The switch is persistent, but the live frequency corrections are not written to 
 
 ## How It Works
 
-During printing the firmware samples the local accelerometer, looks for a stable resonance peak near the current X/Y Input Shaper frequencies, and nudges the active frequency by at most 1 Hz per update. Updates have a 30 second cooldown.
+During printing the firmware samples the local accelerometer continuously, looks for a stable resonance peak near the current X/Y Input Shaper frequencies, and nudges the active frequency by at most 0.35 Hz per update. The tracker uses short measurement windows and can update roughly every 1.5 seconds when the signal is stable enough.
 
 This is intentionally conservative. It is meant for test prints and video experiments, not as a final replacement for Prusa's calibration workflow.
 

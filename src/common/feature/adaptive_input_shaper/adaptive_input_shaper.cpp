@@ -20,17 +20,17 @@ LOG_COMPONENT_REF(Marlin);
 namespace feature::adaptive_input_shaper {
 namespace {
 
-constexpr size_t window_samples = 512;
-constexpr size_t max_samples_per_step = 24;
+constexpr size_t window_samples = 256;
+constexpr size_t max_samples_per_step = 48;
 constexpr size_t frequency_bins = 13;
 constexpr float bin_step_hz = 1.0f;
 constexpr float search_half_span_hz = static_cast<float>(frequency_bins / 2) * bin_step_hz;
 constexpr float min_peak_to_average_ratio = 1.65f;
 constexpr float min_average_power = 25.0f;
-constexpr float max_step_hz = 1.0f;
-constexpr float minimum_change_hz = 0.75f;
-constexpr uint32_t update_cooldown_ms = 30'000;
-constexpr uint32_t retry_cooldown_ms = 60'000;
+constexpr float max_step_hz = 0.35f;
+constexpr float minimum_change_hz = 0.25f;
+constexpr uint32_t update_cooldown_ms = 1'500;
+constexpr uint32_t retry_cooldown_ms = 10'000;
 
 struct FrequencyBin {
     float frequency = 0.0f;
