@@ -74,6 +74,19 @@ void MI_IS_Y_FREQUENCY::OnClick() {
 }
 
 #if HAS_INPUT_SHAPER_CALIBRATION()
+static constexpr const char *adaptive_shaper_items[] {
+    N_("Off"),
+    N_("On"),
+};
+
+MI_ADAPTIVE_INPUT_SHAPER::MI_ADAPTIVE_INPUT_SHAPER()
+    : MenuItemSwitch(_(label), adaptive_shaper_items, config_store().adaptive_input_shaper_enabled.get() ? 1 : 0) {
+}
+
+void MI_ADAPTIVE_INPUT_SHAPER::OnChange([[maybe_unused]] size_t old_index) {
+    config_store().adaptive_input_shaper_enabled.set(get_index() != 0);
+}
+
 MI_IS_CALIB::MI_IS_CALIB()
     : IWindowMenuItem(_(label), nullptr, is_enabled_t::yes, marlin_client::is_printing() ? is_hidden_t::yes : is_hidden_t::no) {
 }

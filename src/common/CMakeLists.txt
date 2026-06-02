@@ -204,6 +204,10 @@ if(HAS_HOTEND_TYPE_SUPPORT)
   target_sources(firmware PRIVATE hotend_type.cpp)
 endif()
 
+if(HAS_INPUT_SHAPER_CALIBRATION AND HAS_LOCAL_ACCELEROMETER)
+  target_sources(firmware PRIVATE feature/adaptive_input_shaper/adaptive_input_shaper.cpp)
+endif()
+
 add_subdirectory(fanctl)
 add_subdirectory(mapi)
 add_subdirectory(marlin_server_types)

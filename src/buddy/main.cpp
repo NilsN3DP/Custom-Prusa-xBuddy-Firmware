@@ -57,6 +57,7 @@
 #include <option/has_nfc.h>
 #include <option/has_i2c_expander.h>
 #include <option/has_local_accelerometer.h>
+#include <option/has_input_shaper_calibration.h>
 #include "tasks.hpp"
 #include <appmain.hpp>
 #include "safe_state.h"
@@ -108,6 +109,10 @@
 
 #if HAS_LOCAL_ACCELEROMETER()
     #include <module/prusa/accelerometer_local.hpp>
+#endif
+
+#if HAS_INPUT_SHAPER_CALIBRATION() && HAS_LOCAL_ACCELEROMETER()
+    #include <feature/adaptive_input_shaper/adaptive_input_shaper.hpp>
 #endif
 
 #if HAS_NFC()
@@ -660,6 +665,9 @@ extern "C" void idle_callback() {
     if (isr_stack_overflow_checker().has_overflowed()) {
         bsod("ISR stack overflow");
     }
+#if HAS_INPUT_SHAPER_CALIBRATION() && HAS_LOCAL_ACCELEROMETER()
+    feature::adaptive_input_shaper::step();
+#endif
 }
 
 void init_error_screen() {

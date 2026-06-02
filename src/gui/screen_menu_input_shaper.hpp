@@ -16,6 +16,7 @@ using ScreenMenuInputShaper = ScreenMenu<
     MI_RETURN,
 #if HAS_INPUT_SHAPER_CALIBRATION()
     MI_IS_CALIB,
+    MI_ADAPTIVE_INPUT_SHAPER,
 #endif
     MI_IS_X_TYPE,
     MI_IS_X_FREQUENCY,

@@ -4,6 +4,7 @@
 #include <Marlin/src/feature/input_shaper/input_shaper_config.hpp>
 #include <Marlin/src/feature/input_shaper/input_shaper.hpp>
 #include "WindowMenuItems.hpp"
+#include "WindowMenuSwitch.hpp"
 #include <gui/menu_item/menu_item_select_menu.hpp>
 #include <meta_utils.hpp>
 
@@ -60,6 +61,16 @@ protected:
 };
 
 #if HAS_INPUT_SHAPER_CALIBRATION()
+class MI_ADAPTIVE_INPUT_SHAPER : public MenuItemSwitch {
+    static constexpr const char *const label = N_("Adaptive Shaping");
+
+public:
+    MI_ADAPTIVE_INPUT_SHAPER();
+
+protected:
+    void OnChange(size_t old_index) override;
+};
+
 class MI_IS_CALIB : public IWindowMenuItem {
     static constexpr const char *const label = N_("Calibration");
 
