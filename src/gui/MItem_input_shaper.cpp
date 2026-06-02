@@ -2,6 +2,7 @@
 
 #include "ScreenHandler.hpp"
 #include <MItem_tools.hpp>
+#include <feature/adaptive_input_shaper/adaptive_input_shaper.hpp>
 #include <window_msgbox.hpp>
 #include <common/utils/algorithm_extensions.hpp>
 
@@ -76,15 +77,57 @@ void MI_IS_Y_FREQUENCY::OnClick() {
 #if HAS_INPUT_SHAPER_CALIBRATION()
 static constexpr const char *adaptive_shaper_items[] {
     N_("Off"),
+    N_("Monitor"),
     N_("On"),
 };
 
 MI_ADAPTIVE_INPUT_SHAPER::MI_ADAPTIVE_INPUT_SHAPER()
-    : MenuItemSwitch(_(label), adaptive_shaper_items, config_store().adaptive_input_shaper_enabled.get() ? 1 : 0) {
+    : MenuItemSwitch(_(label), adaptive_shaper_items, std::min<uint8_t>(config_store().adaptive_input_shaper_mode.get(), std::size(adaptive_shaper_items) - 1)) {
 }
 
 void MI_ADAPTIVE_INPUT_SHAPER::OnChange([[maybe_unused]] size_t old_index) {
-    config_store().adaptive_input_shaper_enabled.set(get_index() != 0);
+    config_store().adaptive_input_shaper_mode.set(static_cast<uint8_t>(get_index()));
+}
+
+static constexpr const char *adaptive_shaper_safety_items[] {
+    N_("Off"),
+    N_("On"),
+};
+
+MI_ADAPTIVE_INPUT_SHAPER_SAFETY::MI_ADAPTIVE_INPUT_SHAPER_SAFETY()
+    : MenuItemSwitch(_(label), adaptive_shaper_safety_items, config_store().adaptive_input_shaper_safety_brake.get() ? 1 : 0) {
+}
+
+void MI_ADAPTIVE_INPUT_SHAPER_SAFETY::OnChange([[maybe_unused]] size_t old_index) {
+    config_store().adaptive_input_shaper_safety_brake.set(get_index() != 0);
+}
+
+MI_ADAPTIVE_INPUT_SHAPER_STATUS::MI_ADAPTIVE_INPUT_SHAPER_STATUS()
+    : WiInfo(_(label), nullptr, is_enabled_t::yes, is_hidden_t::no) {
+    update();
+}
+
+void MI_ADAPTIVE_INPUT_SHAPER_STATUS::update() {
+    const auto status = feature::adaptive_input_shaper::get_status();
+    std::array<char, GetInfoLen()> text {};
+    const char *mode = "Off";
+    if (status.mode == feature::adaptive_input_shaper::Mode::monitor) {
+        mode = status.faulted ? "Fault" : "Mon";
+    } else if (status.mode == feature::adaptive_input_shaper::Mode::correct) {
+        mode = status.faulted ? "Fault" : "On";
+    }
+
+    if (status.active) {
+        snprintf(text.data(), text.size(), "%s X%.1f Y%.1f",
+            mode,
+            static_cast<double>(status.x_frequency),
+            static_cast<double>(status.y_frequency));
+    } else {
+        snprintf(text.data(), text.size(), "%s %s",
+            mode,
+            status.safety_brake ? "Safe" : "NoSafe");
+    }
+    ChangeInformation(text.data());
 }
 
 MI_IS_CALIB::MI_IS_CALIB()

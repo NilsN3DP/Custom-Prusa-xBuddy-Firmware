@@ -601,7 +601,8 @@ struct CurrentStore
     StoreItem<input_shaper::AxisConfig, input_shaper::axis_y_default, ItemFlag::calibrations, journal::hash("Input Shaper Axis Y Config")> input_shaper_axis_y_config;
     StoreItem<bool, input_shaper::weight_adjust_enabled_default, ItemFlag::calibrations, journal::hash("Input Shaper Weight Adjust Y Enabled V2")> input_shaper_weight_adjust_y_enabled;
     StoreItem<input_shaper::WeightAdjustConfig, input_shaper::weight_adjust_y_default, ItemFlag::calibrations, journal::hash("Input Shaper Weight Adjust Y Config")> input_shaper_weight_adjust_y_config;
-    StoreItem<bool, false, ItemFlag::features, journal::hash("Adaptive Input Shaper Enabled")> adaptive_input_shaper_enabled;
+    StoreItem<uint8_t, 0, ItemFlag::features, journal::hash("Adaptive Input Shaper Mode")> adaptive_input_shaper_mode;
+    StoreItem<bool, true, ItemFlag::features, journal::hash("Adaptive Input Shaper Safety Brake")> adaptive_input_shaper_safety_brake;
 
     input_shaper::Config get_input_shaper_config();
     void set_input_shaper_config(const input_shaper::Config &);

@@ -28,6 +28,9 @@ void ScreenMenuInputShaper::update_gui() {
     Item<MI_IS_Y_TYPE>().set_enabled(is_editing_enabled && y_enabled);
     Item<MI_IS_Y_FREQUENCY>().set_enabled(is_editing_enabled && y_enabled);
     Item<MI_IS_RESTORE_DEFAULTS>().set_enabled(is_editing_enabled);
+#if HAS_INPUT_SHAPER_CALIBRATION()
+    Item<MI_ADAPTIVE_INPUT_SHAPER_STATUS>().update();
+#endif
 
     Item<MI_IS_X_TYPE>().set_show_disabled_extension(x_enabled);
     Item<MI_IS_X_FREQUENCY>().set_show_disabled_extension(x_enabled);

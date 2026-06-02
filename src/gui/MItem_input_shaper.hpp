@@ -4,6 +4,7 @@
 #include <Marlin/src/feature/input_shaper/input_shaper_config.hpp>
 #include <Marlin/src/feature/input_shaper/input_shaper.hpp>
 #include "WindowMenuItems.hpp"
+#include "WindowMenuInfo.hpp"
 #include "WindowMenuSwitch.hpp"
 #include <gui/menu_item/menu_item_select_menu.hpp>
 #include <meta_utils.hpp>
@@ -69,6 +70,24 @@ public:
 
 protected:
     void OnChange(size_t old_index) override;
+};
+
+class MI_ADAPTIVE_INPUT_SHAPER_SAFETY : public MenuItemSwitch {
+    static constexpr const char *const label = N_("AIS Safety Brake");
+
+public:
+    MI_ADAPTIVE_INPUT_SHAPER_SAFETY();
+
+protected:
+    void OnChange(size_t old_index) override;
+};
+
+class MI_ADAPTIVE_INPUT_SHAPER_STATUS : public WiInfo<28> {
+    static constexpr const char *const label = N_("AIS Status");
+
+public:
+    MI_ADAPTIVE_INPUT_SHAPER_STATUS();
+    void update();
 };
 
 class MI_IS_CALIB : public IWindowMenuItem {

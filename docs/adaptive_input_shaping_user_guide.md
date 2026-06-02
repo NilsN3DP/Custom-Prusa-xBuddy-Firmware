@@ -6,14 +6,17 @@ This custom firmware adds an experimental Adaptive Shaping switch to the Input S
 
 1. Run the normal Prusa Input Shaper calibration first.
 2. Open `Settings > Input Shaper`.
-3. Set `Adaptive Shaping` to `On`.
-4. Start a print.
+3. Set `Adaptive Shaping` to `Monitor` if you only want logging, or `On` if you want live correction.
+4. Leave `AIS Safety Brake` on for normal testing. Turn it off only when you intentionally want to observe unstable data without automatic shutdown.
+5. Start a print.
 
 The switch is persistent, but the live frequency corrections are not written to EEPROM. At the end of the print, or when the switch is turned off, the firmware restores the input-shaper frequencies that were active when the print started.
 
 ## How It Works
 
 During printing the firmware samples the local accelerometer continuously, looks for a stable resonance peak near the current X/Y Input Shaper frequencies, and nudges the active frequency by at most 0.35 Hz per update. The tracker uses short measurement windows and can update roughly every 1.5 seconds when the signal is stable enough.
+
+`Monitor` mode writes the same measurements to `/usb/adaptive_is_log.csv` without changing the input-shaper frequency. `On` mode writes the log and applies the bounded frequency corrections.
 
 This is intentionally conservative. It is meant for test prints and video experiments, not as a final replacement for Prusa's calibration workflow.
 
