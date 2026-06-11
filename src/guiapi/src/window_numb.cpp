@@ -2,6 +2,7 @@
 #include "window_numb.hpp"
 #include "time_helper.hpp"
 #include "gui.hpp"
+#include <gui_theme.hpp>
 #include <ctime>
 
 // @@TODO Beware - keep this big enough as long as the SetFormat is being abused to print
@@ -23,7 +24,7 @@ void window_numb_t::unconditionalDraw() {
     }
 
     if (IsCaptured()) { // capture color could be part of color scheme, but currently it is used only here
-        clr_text = COLOR_BRAND;
+        clr_text = gui::theme::accent_color();
     }
 
     char text[WINDOW_NUMB_MAX_TEXT];

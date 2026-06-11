@@ -47,7 +47,7 @@ add_subdirectory(host)
 add_subdirectory(feature)
 add_subdirectory(${PRINTER})
 
-if(HAS_NOZZLE_CLEANER)
+if(HAS_NOZZLE_CLEANER OR PRINTER STREQUAL "COREONE" OR PRINTER STREQUAL "COREONEL")
   target_sources(firmware PRIVATE G12.cpp)
 endif()
 

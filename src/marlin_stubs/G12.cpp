@@ -2,7 +2,6 @@
 
 #include <nozzle_cleaner.hpp>
 #include <logging/log.hpp>
-#include "common/gcode/inject_queue_actions.hpp"
 #include "marlin_server.hpp"
 
 #include <option/has_auto_retract.h>
@@ -46,7 +45,17 @@ void PrusaGcodeSuite::G12() {
     }
 #endif
 
-    marlin_server::inject({ GCodeFilename(nozzle_cleaner::clean_filename, nozzle_cleaner::clean_sequence) });
+    if (nozzle_cleaner::is_loader_idle()) {
+        nozzle_cleaner::load_clean_gcode();
+    }
+
+    while (nozzle_cleaner::is_loader_buffering()) {
+        idle(true);
+    }
+
+    if (!nozzle_cleaner::execute()) {
+        log_error(PRUSA_GCODE, "Nozzle cleaner G12 failed");
+    }
 }
 
 /** @}*/

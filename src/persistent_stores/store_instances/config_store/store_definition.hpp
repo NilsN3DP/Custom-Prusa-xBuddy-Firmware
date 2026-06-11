@@ -17,6 +17,7 @@
 #include <module/temperature.h>
 #include <config.h>
 #include <sound_enum.h>
+#include <gui_theme.hpp>
 #include <footer_eeprom.hpp>
 #include <time_tools.hpp>
 #include <encoded_filament.hpp>
@@ -43,6 +44,7 @@
 #include <option/has_chamber_filtration_api.h>
 #include <option/has_esp.h>
 #include <option/has_auto_retract.h>
+#include <option/has_nozzle_cleaner.h>
 #include <option/has_door_sensor_calibration.h>
 #include <option/has_chamber_vents.h>
 #include <option/has_precise_homing_corexy.h>
@@ -221,6 +223,12 @@ struct CurrentStore
     StoreItem<uint8_t, defaults::sound_volume, ItemFlag::user_interface, journal::hash("Sound Volume")> sound_volume;
     StoreItem<uint16_t, defaults::language, ItemFlag::user_interface, journal::hash("Language")> language;
     StoreItem<uint8_t, 0, ItemFlag::user_interface, journal::hash("File Sort")> file_sort; // filebrowser file sort options
+    StoreItem<gui::theme::ThemePreset, gui::theme::default_preset, ItemFlag::user_interface, journal::hash("UI Theme Preset")> ui_theme_preset;
+    StoreItem<gui::theme::AccentColor, gui::theme::default_accent, ItemFlag::user_interface, journal::hash("UI Accent Color")> ui_accent_color;
+    StoreItem<gui::theme::BackgroundColor, gui::theme::default_background, ItemFlag::user_interface, journal::hash("UI Background Color")> ui_background_color;
+    StoreItem<uint16_t, 169, ItemFlag::user_interface, journal::hash("UI Custom Hue")> ui_custom_hue;
+    StoreItem<uint8_t, 100, ItemFlag::user_interface, journal::hash("UI Custom Saturation")> ui_custom_saturation;
+    StoreItem<uint8_t, 56, ItemFlag::user_interface, journal::hash("UI Custom Value")> ui_custom_value;
     StoreItem<bool, true, ItemFlag::user_interface, journal::hash("Menu Timeout")> menu_timeout; // on / off menu timeout flag
     StoreItem<bool, true, ItemFlag::user_interface, journal::hash("Devhash in QR")> devhash_in_qr; // on / off sending UID in QR
 
@@ -731,9 +739,45 @@ struct CurrentStore
     static_assert(HOTENDS <= 8);
 #endif
 
+#if PRINTER_IS_PRUSA_COREONE() || PRINTER_IS_PRUSA_COREONEL()
+    StoreItem<uint8_t, 0, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Nozzle Cleaning Profile N3DP V1")> nozzle_cleaning_profile;
+    StoreItem<uint16_t, 0, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("N3DP Nozzle Clean Standard Temp V2")> nozzle_cleaning_standard_temperature;
+    StoreItem<uint16_t, 180, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("N3DP Nozzle Clean Printed Temp V2")> nozzle_cleaning_printed_wiper_temperature;
+    StoreItem<uint16_t, 180, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("N3DP Nozzle Clean Custom Temp V2")> nozzle_cleaning_custom_temperature;
+    StoreItem<uint8_t, 3, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("N3DP Nozzle Clean Custom Passes V2")> nozzle_cleaning_custom_passes;
+    StoreItem<uint16_t, 2500, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("N3DP Nozzle Clean Custom Speed V2")> nozzle_cleaning_custom_speed;
+    StoreItem<uint8_t, 80, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("N3DP Nozzle Clean Custom Fan V2")> nozzle_cleaning_custom_fan;
+    StoreItem<float, 224.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Nozzle Cleaning Custom Start X N3DP V1")> nozzle_cleaning_custom_start_x;
+    StoreItem<float, 296.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Nozzle Cleaning Custom Start Y N3DP V1")> nozzle_cleaning_custom_start_y;
+    StoreItem<float, 254.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Nozzle Cleaning Custom End X N3DP V1")> nozzle_cleaning_custom_end_x;
+    StoreItem<float, 285.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Nozzle Cleaning Custom End Y N3DP V1")> nozzle_cleaning_custom_end_y;
+#endif
+
 #if HAS_CHAMBER_VENTS()
     StoreItem<bool, true, ItemFlag::features, journal::hash("Check chamber ventilation state")> check_chamber_vent_state;
     StoreItem<bool, true, ItemFlag::hw_config, journal::hash("Auto chamber vent enabled")> auto_chamber_vent_enabled;
+    StoreItem<uint8_t, 0, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Parts Profile N3DP V1")> top_vent_parts_profile;
+    StoreItem<uint8_t, 0, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Calibration Point N3DP V1")> top_vent_calibration_point;
+    StoreItem<float, 50.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Open Start X V2")> top_vent_n3dp_open_start_x;
+    StoreItem<float, -18.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Open Start Y V2")> top_vent_n3dp_open_start_y;
+    StoreItem<float, 42.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Open End X V2")> top_vent_n3dp_open_end_x;
+    StoreItem<float, -18.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Open End Y V2")> top_vent_n3dp_open_end_y;
+    StoreItem<float, 11.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Close Start X V2")> top_vent_n3dp_close_start_x;
+    StoreItem<float, -3.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Close Start Y V2")> top_vent_n3dp_close_start_y;
+    StoreItem<float, 36.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Close End X V2")> top_vent_n3dp_close_end_x;
+    StoreItem<float, -18.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Close End Y V2")> top_vent_n3dp_close_end_y;
+    StoreItem<float, -3.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Safe Y V2")> top_vent_n3dp_safe_y;
+    StoreItem<float, -18.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent N3DP Lever Y V2")> top_vent_n3dp_lever_y;
+    StoreItem<float, 37.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Open Start X N3DP V1")> top_vent_custom_open_start_x;
+    StoreItem<float, -3.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Open Start Y N3DP V1")> top_vent_custom_open_start_y;
+    StoreItem<float, 24.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Open End X N3DP V1")> top_vent_custom_open_end_x;
+    StoreItem<float, -18.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Open End Y N3DP V1")> top_vent_custom_open_end_y;
+    StoreItem<float, 11.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Close Start X N3DP V1")> top_vent_custom_close_start_x;
+    StoreItem<float, -3.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Close Start Y N3DP V1")> top_vent_custom_close_start_y;
+    StoreItem<float, 26.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Close End X N3DP V1")> top_vent_custom_close_end_x;
+    StoreItem<float, -18.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Close End Y N3DP V1")> top_vent_custom_close_end_y;
+    StoreItem<float, -3.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Safe Y N3DP V1")> top_vent_custom_safe_y;
+    StoreItem<float, -18.f, ItemFlag::hw_config | ItemFlag::common_misconfigurations, journal::hash("Top Vent Custom Lever Y N3DP V1")> top_vent_custom_lever_y;
 
     VentControl get_vent_control();
     void set_vent_control(VentControl state);

@@ -10,6 +10,7 @@
 #include "footer_eeprom.hpp"
 #include <option/has_toolchanger.h>
 #include <config_store/store_instance.hpp>
+#include <gui_theme.hpp>
 #include <utils/string_builder.hpp>
 #include <common/nozzle_diameter.hpp>
 #include <option/has_modular_bed.h>
@@ -68,16 +69,16 @@ void FooterItemBed::unconditionalDraw() {
             if (enabled) {
                 display::fill_rect(
                     Rect16(icon.Left() + x * 4, icon.Top() + icon.Height() - 4 - (y * 4), 3, 3),
-                    COLOR_BRAND);
+                    gui::theme::accent_color());
             } else if (warm) {
                 uint px = icon.Left() + x * 4;
                 uint py = icon.Top() + icon.Height() - 4 - (y * 4);
 
-                display::set_pixel(point_ui16_t(px + 1, py), COLOR_BRAND);
-                display::set_pixel(point_ui16_t(px + 1, py + 1), COLOR_BRAND);
-                display::set_pixel(point_ui16_t(px + 1, py + 2), COLOR_BRAND);
-                display::set_pixel(point_ui16_t(px, py + 1), COLOR_BRAND);
-                display::set_pixel(point_ui16_t(px + 2, py + 1), COLOR_BRAND);
+                display::set_pixel(point_ui16_t(px + 1, py), gui::theme::accent_color());
+                display::set_pixel(point_ui16_t(px + 1, py + 1), gui::theme::accent_color());
+                display::set_pixel(point_ui16_t(px + 1, py + 2), gui::theme::accent_color());
+                display::set_pixel(point_ui16_t(px, py + 1), gui::theme::accent_color());
+                display::set_pixel(point_ui16_t(px + 2, py + 1), gui::theme::accent_color());
             } else {
                 display::fill_rect(
                     Rect16(icon.Left() + x * 4, icon.Top() + icon.Height() - 4 - (y * 4), 3, 3),
@@ -154,7 +155,7 @@ void FooterItemAllNozzles::unconditionalDraw() {
         if (column_height > gray_column_max) {
             display::fill_rect(
                 Rect16(icon.Left() + nozzle * column_size + 1, icon.Top() + icon.Height() - column_height, column_size - 1, column_height - gray_column_max),
-                COLOR_BRAND);
+                gui::theme::accent_color());
         }
     }
 #endif /*HAS_TOOLCHANGER()*/

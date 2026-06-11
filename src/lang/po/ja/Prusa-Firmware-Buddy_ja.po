@@ -8496,3 +8496,55 @@ msgstr "ショキカ / %ld"
 #: src/gui/menu_item_xlcd.hpp:11
 msgid "xLCD"
 msgstr "xLCD"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Printed Wiper"
+msgstr "印刷ワイパー"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Test"
+msgstr "ノズル清掃テスト"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Cleaning Temp"
+msgstr "清掃温度"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Custom Wiper"
+msgstr "カスタムワイパー"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "CUSTOM WIPER"
+msgstr "カスタムワイパー"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start X"
+msgstr "ノズル清掃開始 X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start Y"
+msgstr "ノズル清掃開始 Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End X"
+msgstr "ノズル清掃終了 X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End Y"
+msgstr "ノズル清掃終了 Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Pos"
+msgstr "ノズル清掃位置"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Passes"
+msgstr "ブラシ回数"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Speed"
+msgstr "ブラシ速度"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Fan"
+msgstr "ブラシファン"

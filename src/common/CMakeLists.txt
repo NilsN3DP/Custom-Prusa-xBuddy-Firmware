@@ -27,6 +27,7 @@ if(BOARD IN_LIST BUDDY_BOARDS)
             footer_eeprom.cpp
             fsm_states.cpp
             general_response.cpp
+            gui_theme.cpp
             hardware_rng.cpp
             hardware_serial.cpp
             heap.cpp

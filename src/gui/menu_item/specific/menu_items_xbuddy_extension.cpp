@@ -79,6 +79,17 @@ void MI_XBE_FILTRATION_FAN::OnClick() {
     handle_fan_item_click(*this, buddy::XBuddyExtension::Fan::filtration_fan);
 }
 
+// MI_XBE_CHAMBER_LIGHTS
+// =============================================
+MI_XBE_CHAMBER_LIGHTS::MI_XBE_CHAMBER_LIGHTS()
+    : WiSpin(buddy::xbuddy_extension().chamber_leds_percent(), numeric_input_config::percent_with_off, _("Chamber Lights")) {
+    set_is_hidden(buddy::xbuddy_extension().status() == buddy::XBuddyExtension::Status::disabled);
+}
+
+void MI_XBE_CHAMBER_LIGHTS::OnClick() {
+    buddy::xbuddy_extension().set_chamber_leds_percent(value());
+}
+
 // MI_INFO_XBUDDY_EXTENSION_FAN1
 // =============================================
 MI_INFO_XBUDDY_EXTENSION_FAN1::MI_INFO_XBUDDY_EXTENSION_FAN1()

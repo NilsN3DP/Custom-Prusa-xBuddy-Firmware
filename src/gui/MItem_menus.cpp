@@ -26,6 +26,7 @@
 #include "screen_menu_statistics.hpp"
 #include "screen_menu_error_test.hpp"
 #include "screen_menu_input_shaper.hpp"
+#include "screen_menu_enclosure.hpp"
 #include <screen_menu_languages.hpp>
 #include <screen_menu_info.hpp>
 #include <screen_menu_control.hpp>
@@ -159,6 +160,10 @@ template struct MI_SCREEN_CTOR<ScreenMenuBedLevelCorrection>;
 
 #if HAS_LEDS_MENU()
 template struct MI_SCREEN_CTOR<ScreenMenuLeds>;
+#endif
+
+#if (HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()) || HAS_CHAMBER_API() || HAS_CHAMBER_FILTRATION_API() || HAS_LEDS_MENU()
+template struct MI_SCREEN_CTOR<ScreenMenuEnclosure>;
 #endif
 
 /**********************************************************************************************/

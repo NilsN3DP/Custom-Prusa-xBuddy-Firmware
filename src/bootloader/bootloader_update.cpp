@@ -83,7 +83,7 @@ static bool flash_program(const uint8_t *flash_address, const uint8_t *data, siz
         uint64_t block_data;
         size_t block_length;
 
-        if (length > 8 && false) {
+        if (length >= 8) {
             program_type = FLASH_TYPEPROGRAM_DOUBLEWORD;
             memcpy(&block_data, data, sizeof(uint64_t));
             block_length = sizeof(uint64_t);

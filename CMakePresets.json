@@ -2832,6 +2832,77 @@
             }
         },
         {
+            "name": "mk4s_enclosure_release_boot",
+            "generator": "Ninja",
+            "binaryDir": "build-vscode-buddy-mk4s-enclosure",
+            "cacheVariables": {
+                "CMAKE_MAKE_PROGRAM": {
+                    "type": "FILEPATH",
+                    "value": "${sourceDir}/.dependencies/ninja-1.10.2/ninja"
+                },
+                "PRINTER": {
+                    "type": "STRING",
+                    "value": "MK4"
+                },
+                "SIGNATURE_OAK": {
+                    "type": "STRING",
+                    "value": "OFF"
+                },
+                "BOARD": {
+                    "type": "STRING",
+                    "value": "XBUDDY"
+                },
+                "HAS_XBUDDY_EXTENSION": {
+                    "type": "STRING",
+                    "value": "YES"
+                },
+                "HAS_CHAMBER_API": {
+                    "type": "STRING",
+                    "value": "YES"
+                },
+                "HAS_CHAMBER_FILTRATION_API": {
+                    "type": "STRING",
+                    "value": "YES"
+                },
+                "XBUDDY_EXTENSION_VARIANT": {
+                    "type": "STRING",
+                    "value": "STANDARD"
+                },
+                "XBUDDY_EXTENSION_BINARY_DIR": {
+                    "type": "FILEPATH",
+                    "value": "${sourceDir}/build-vscode-xbuddy-extension-mk4s"
+                },
+                "BOOTLOADER": {
+                    "type": "STRING",
+                    "value": "YES"
+                },
+                "GENERATE_DFU": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "SIGNING_KEY": {
+                    "type": "FILEPATH",
+                    "value": ""
+                },
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "${sourceDir}/cmake/GccArmNoneEabi.cmake"
+                },
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                },
+                "PROJECT_VERSION_SUFFIX": {
+                    "type": "STRING",
+                    "value": "<auto>"
+                },
+                "PROJECT_VERSION_SUFFIX_SHORT": {
+                    "type": "STRING",
+                    "value": "<auto>"
+                }
+            }
+        },
+        {
             "name": "mk4_release_noboot",
             "generator": "Ninja",
             "binaryDir": "build-vscode-buddy",
@@ -5528,6 +5599,57 @@
                 "PRINTER": {
                     "type": "STRING",
                     "value": "COREONE"
+                },
+                "SIGNATURE_OAK": {
+                    "type": "STRING",
+                    "value": "OFF"
+                },
+                "BOARD": {
+                    "type": "STRING",
+                    "value": "XBUDDY_EXTENSION"
+                },
+                "BOOTLOADER": {
+                    "type": "STRING",
+                    "value": "YES"
+                },
+                "GENERATE_DFU": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "SIGNING_KEY": {
+                    "type": "FILEPATH",
+                    "value": ""
+                },
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "${sourceDir}/cmake/GccArmNoneEabi.cmake"
+                },
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                },
+                "PROJECT_VERSION_SUFFIX": {
+                    "type": "STRING",
+                    "value": "<auto>"
+                },
+                "PROJECT_VERSION_SUFFIX_SHORT": {
+                    "type": "STRING",
+                    "value": "<auto>"
+                }
+            }
+        },
+        {
+            "name": "mk4-xbuddy-extension_release_boot",
+            "generator": "Ninja",
+            "binaryDir": "build-vscode-xbuddy-extension-mk4s",
+            "cacheVariables": {
+                "CMAKE_MAKE_PROGRAM": {
+                    "type": "FILEPATH",
+                    "value": "${sourceDir}/.dependencies/ninja-1.10.2/ninja"
+                },
+                "PRINTER": {
+                    "type": "STRING",
+                    "value": "MK4"
                 },
                 "SIGNATURE_OAK": {
                     "type": "STRING",

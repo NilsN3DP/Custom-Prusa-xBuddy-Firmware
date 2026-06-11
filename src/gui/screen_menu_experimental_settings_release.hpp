@@ -8,10 +8,17 @@
 #include "screen_menu.hpp"
 #include "MItem_menus.hpp"
 #include "MItem_experimental_tools.hpp"
+#include "screen/toolhead/screen_toolhead_settings.hpp"
 
 // parent alias
 using ScreenMenuExperimentalSettings__ = ScreenMenu<GuiDefaults::MenuFooter,
     MI_SAVE_AND_RETURN,
+#if HAS_CHAMBER_VENTS()
+    screen_toolhead_settings::MI_TOP_VENT_CUSTOM_SETTINGS,
+#endif
+#if PRINTER_IS_PRUSA_COREONE() || PRINTER_IS_PRUSA_COREONEL()
+    screen_toolhead_settings::MI_NOZZLE_CLEANING_CUSTOM_SETTINGS,
+#endif
 #if PRINTER_IS_PRUSA_MK3_5()
     MI_ALT_FAN,
 #endif

@@ -15,6 +15,8 @@
 #include "sound.hpp"
 #include "tasks.hpp"
 #include <config_store/store_instance.hpp>
+#include <gui_theme.hpp>
+#include <printers.h>
 #include <crash_dump/dump.hpp>
 #include <screen_splash.hpp>
 #include <wdt.hpp>
@@ -66,8 +68,13 @@ void gui_error_run(void) {
 
 void gui_run(void) {
     gui_init();
+    gui::theme::load_from_config_store();
 
+#if PRINTER_IS_PRUSA_COREONE() || PRINTER_IS_PRUSA_COREONEL()
     gui::knob::RegisterHeldLeftAction(TakeAScreenshot);
+#else
+    gui::knob::RegisterHeldLeftAction(TakeAScreenshot);
+#endif
     gui::knob::RegisterLongPressScreenAction([]() { Screens::Access()->Open(ScreenFactory::Screen<ScreenMoveZ>); });
 
     Screens::Init(ScreenFactory::Screen<ScreenSplash>);

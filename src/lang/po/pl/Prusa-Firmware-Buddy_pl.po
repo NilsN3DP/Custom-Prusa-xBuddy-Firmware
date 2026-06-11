@@ -8349,3 +8349,55 @@ msgstr "nie zainicjalizowano / %ld"
 #: src/gui/menu_item_xlcd.hpp:11
 msgid "xLCD"
 msgstr "xLCD"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Printed Wiper"
+msgstr "Drukowana wycieraczka"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Test"
+msgstr "Test czyszczenia dyszy"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Cleaning Temp"
+msgstr "Temp. czyszczenia"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Custom Wiper"
+msgstr "Własna wycieraczka"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "CUSTOM WIPER"
+msgstr "WŁASNA WYCIERACZKA"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start X"
+msgstr "Czyszczenie dyszy start X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start Y"
+msgstr "Czyszczenie dyszy start Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End X"
+msgstr "Czyszczenie dyszy koniec X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End Y"
+msgstr "Czyszczenie dyszy koniec Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Pos"
+msgstr "Poz. czyszczenia dyszy"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Passes"
+msgstr "Przejścia szczotki"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Speed"
+msgstr "Prędkość szczotki"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Fan"
+msgstr "Wentylator szczotki"

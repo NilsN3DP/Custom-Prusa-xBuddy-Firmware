@@ -8413,3 +8413,61 @@ msgstr "non initialisé / %ld"
 #: src/gui/menu_item_xlcd.hpp:11
 msgid "xLCD"
 msgstr "xLCD"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Printed Wiper"
+msgstr "Essuyeur imprimé"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Test"
+msgstr "Test nettoyage buse"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Cleaning Temp"
+msgstr "Temp. nettoyage"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Custom Wiper"
+msgstr "Essuyeur personnalisé"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "CUSTOM WIPER"
+msgstr "ESSUYEUR PERSONNALISÉ"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start X"
+msgstr "Nettoyage buse début X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start Y"
+msgstr "Nettoyage buse début Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End X"
+msgstr "Nettoyage buse fin X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End Y"
+msgstr "Nettoyage buse fin Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Pos"
+msgstr "Pos. nettoyage buse"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Passes"
+msgstr "Passages brosse"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Speed"
+msgstr "Vitesse brosse"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Fan"
+msgstr "Ventilateur brosse"
+
+msgid "CFW"
+msgstr "CFW"
+
+msgid "Screenshot Shortcut"
+msgstr "Raccourci capture"

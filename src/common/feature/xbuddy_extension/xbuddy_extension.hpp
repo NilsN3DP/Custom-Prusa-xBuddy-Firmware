@@ -101,6 +101,18 @@ public: // LEDs
     /// Sets PWM for the led strip that is under the bed
     void set_bed_leds_color(leds::ColorRGBW set);
 
+    /// Temporarily overrides the bed LED strip color. Passing duration 0 clears the override.
+    void set_bed_leds_override(leds::ColorRGBW set, uint32_t duration_ms);
+
+    /// \returns current manual chamber light value, converted to percentage.
+    uint8_t chamber_leds_percent() const;
+
+    /// Sets the chamber white LED output manually.
+    void set_chamber_leds_percent(uint8_t percent);
+
+    /// Temporarily overrides the chamber white LED output. Passing duration 0 clears the override.
+    void set_chamber_leds_override(uint8_t pwm, uint32_t duration_ms);
+
     /// Sets the white led strobe mode.
     ///
     /// * If set to nullopt, strobe mode is disabled. Led goes to shining
@@ -163,6 +175,24 @@ private:
 
 #if XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
     leds::ColorRGBW bed_leds_color_;
+
+    struct BedLedsOverride {
+        leds::ColorRGBW color;
+        uint32_t start_ms;
+        uint32_t duration_ms;
+    };
+    std::optional<BedLedsOverride> bed_leds_override_;
+
+    bool chamber_leds_manual_ = false;
+    uint8_t chamber_leds_pwm_ = 0;
+
+    struct ChamberLedsOverride {
+        uint8_t pwm;
+        uint32_t start_ms;
+        uint32_t duration_ms;
+    };
+    std::optional<ChamberLedsOverride> chamber_leds_override_;
+
     std::optional<uint16_t> strobe_freq_ = std::nullopt;
 
     FanCooling chamber_cooling;

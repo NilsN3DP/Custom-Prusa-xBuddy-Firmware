@@ -13,6 +13,7 @@
 #include <option/has_toolchanger.h>
 #include <option/has_leds.h>
 #include <option/has_touch.h>
+#include <option/has_xbuddy_extension.h>
 #include <option/xbuddy_extension_variant.h>
 #include <option/has_leds_menu.h>
 
@@ -20,12 +21,16 @@
     #include "MItem_touch.hpp"
 #endif
 
-#if XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
+#if HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
     #include <menu_item/specific/menu_items_xbuddy_extension.hpp>
 #endif
 
 using ScreenMenuUserInterface__ = ScreenMenu<GuiDefaults::MenuFooter, MI_RETURN,
     MI_FOOTER_SETTINGS, MI_SORT_FILES,
+    MI_UI_THEME_PRESET,
+    MI_UI_ACCENT_COLOR,
+    MI_UI_CUSTOM_HUE, MI_UI_CUSTOM_SATURATION, MI_UI_CUSTOM_VALUE,
+    MI_UI_BACKGROUND_COLOR,
 #if not PRINTER_IS_PRUSA_MINI()
     MI_PRINT_PROGRESS_TIME,
 #endif

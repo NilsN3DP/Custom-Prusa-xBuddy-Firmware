@@ -8271,3 +8271,61 @@ msgstr "neinicializováno / %ld"
 #: src/gui/menu_item_xlcd.hpp:11
 msgid "xLCD"
 msgstr "xLCD"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Printed Wiper"
+msgstr "Tištěný stěrač"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Test"
+msgstr "Test čištění trysky"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Cleaning Temp"
+msgstr "Teplota čištění"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Custom Wiper"
+msgstr "Vlastní stěrač"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "CUSTOM WIPER"
+msgstr "VLASTNÍ STĚRAČ"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start X"
+msgstr "Čištění trysky start X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start Y"
+msgstr "Čištění trysky start Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End X"
+msgstr "Čištění trysky konec X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End Y"
+msgstr "Čištění trysky konec Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Pos"
+msgstr "Pozice čištění trysky"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Passes"
+msgstr "Průchody kartáčem"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Speed"
+msgstr "Rychlost kartáče"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Fan"
+msgstr "Ventilátor kartáče"
+
+msgid "CFW"
+msgstr "CFW"
+
+msgid "Screenshot Shortcut"
+msgstr "Zkratka snímku"

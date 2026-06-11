@@ -1,6 +1,7 @@
 #pragma once
 
 #include <str_utils.hpp>
+#include <cstdint>
 
 namespace nozzle_cleaner {
 
@@ -9,6 +10,10 @@ extern ConstexprString vblade_cut_sequence;
 
 extern ConstexprString clean_filename;
 extern ConstexprString vblade_cut_filename;
+
+const char *selected_clean_sequence();
+const char *selected_clean_filename();
+uint16_t selected_clean_temperature();
 
 void load_clean_gcode();
 void load_vblade_cut_gcode();

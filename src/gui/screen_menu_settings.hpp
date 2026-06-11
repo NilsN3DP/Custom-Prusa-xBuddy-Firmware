@@ -14,12 +14,15 @@
 #include <option/developer_mode.h>
 #include <option/xbuddy_extension_variant.h>
 #include <option/has_phase_stepping.h>
+#include <option/has_chamber_api.h>
+#include <option/has_leds_menu.h>
+#include <option/has_xbuddy_extension.h>
 
 #if HAS_MMU2()
     #include "MItem_mmu.hpp"
 #endif
 
-#if XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
+#if HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
     #include <gui/menu_item/specific/menu_items_xbuddy_extension.hpp>
 #endif
 
@@ -66,7 +69,7 @@ using ScreenMenuSettings__ = ScreenMenu<GuiDefaults::MenuFooter, MI_RETURN,
     MI_MMU_BOOTLOADER_RESULT,
     MI_MMU_CUTTER,
 #endif
-#if XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
+#if HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
     MI_CAM_USB_PWR,
 #endif
     MI_STEALTH_MODE,
@@ -75,6 +78,9 @@ using ScreenMenuSettings__ = ScreenMenu<GuiDefaults::MenuFooter, MI_RETURN,
     MI_DRYRUN,
 #if HAS_CHAMBER_FILTRATION_API()
     MI_CHAMBER_FILTRATION,
+#endif
+#if (HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()) || HAS_CHAMBER_API() || HAS_CHAMBER_FILTRATION_API() || HAS_LEDS_MENU()
+    MI_ENCLOSURE_SETTINGS,
 #endif
 #if ENABLED(CRASH_RECOVERY)
     MI_CRASH_DETECTION,

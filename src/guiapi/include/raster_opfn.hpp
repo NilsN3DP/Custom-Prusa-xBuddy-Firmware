@@ -40,7 +40,7 @@ struct ropfn {
     is_desaturated desatur : 1 = is_desaturated::no;
 
     constexpr uint8_t ConvertToC() const {
-        uint8_t ret = 0;
+        uint8_t ret = ROPFN_THEME;
         if (invert == is_inverted::yes) {
             ret |= ROPFN_INVERT;
         }

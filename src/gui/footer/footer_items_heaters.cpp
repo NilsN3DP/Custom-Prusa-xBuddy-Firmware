@@ -1,5 +1,6 @@
 #include "footer_items_heaters.hpp"
 #include <guiconfig/GuiDefaults.hpp>
+#include <gui_theme.hpp>
 #include <cmath>
 #include "ScreenHandler.hpp"
 #include "footer_eeprom.hpp"
@@ -102,6 +103,10 @@ FooterItemHeater::HeatState FooterItemHeater::getState(int current, int target, 
     }
 
     return state;
+}
+
+Color FooterItemHeater::ColorFromState(HeatState st) {
+    return st == HeatState::stable ? gui::theme::text_color() : gui::theme::accent_color();
 }
 
 resized_t FooterItemHeater::updateState() {

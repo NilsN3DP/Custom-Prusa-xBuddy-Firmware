@@ -1,5 +1,6 @@
 #include "xbuddy_extension.hpp"
 
+#include <algorithm>
 #include <utility>
 
 #include <common/temperature.hpp>
@@ -7,7 +8,10 @@
 #include <feature/chamber/chamber.hpp>
 #include <feature/chamber_filtration/chamber_filtration.hpp>
 #include <marlin_server.hpp>
-#include <leds/side_strip_handler.hpp>
+#include <option/has_side_leds.h>
+#if HAS_SIDE_LEDS()
+    #include <leds/side_strip_handler.hpp>
+#endif
 #include <buddy/unreachable.hpp>
 #include <CFanCtl3Wire.hpp> // for FANCTL_START_TIMEOUT
 #include <utils/timing/rate_limiter.hpp>
@@ -47,16 +51,43 @@ void XBuddyExtension::step() {
     const auto filtration_backend = chamber_filtration().backend();
     const auto filtration_pwm = chamber_filtration().output_pwm();
     const auto temp = chamber().current_temperature();
+    const auto now_ms = ticks_ms();
 
     std::lock_guard _lg(mutex_);
 
-    const auto chamber_leds_pwm = strobe_freq_.has_value() ? strobe_pwm : leds::SideStripHandler::instance().color().w;
+    uint8_t chamber_leds_pwm = chamber_leds_manual_ ? chamber_leds_pwm_ : 0;
+#if HAS_SIDE_LEDS()
+    if (!chamber_leds_manual_) {
+        chamber_leds_pwm = leds::SideStripHandler::instance().color().w;
+    }
+#endif
 
     if (status() != Status::ready) {
         return;
     }
 
-    puppies::xbuddy_extension.set_rgbw_led({ bed_leds_color_.r, bed_leds_color_.g, bed_leds_color_.b, bed_leds_color_.w });
+    leds::ColorRGBW bed_leds_color = bed_leds_color_;
+    if (bed_leds_override_) {
+        if (bed_leds_override_->duration_ms == 0 || ticks_diff(now_ms, bed_leds_override_->start_ms) >= static_cast<int32_t>(bed_leds_override_->duration_ms)) {
+            bed_leds_override_.reset();
+        } else {
+            bed_leds_color = bed_leds_override_->color;
+        }
+    }
+
+    if (chamber_leds_override_) {
+        if (chamber_leds_override_->duration_ms == 0 || ticks_diff(now_ms, chamber_leds_override_->start_ms) >= static_cast<int32_t>(chamber_leds_override_->duration_ms)) {
+            chamber_leds_override_.reset();
+        } else {
+            chamber_leds_pwm = chamber_leds_override_->pwm;
+        }
+    }
+
+    if (strobe_freq_.has_value()) {
+        chamber_leds_pwm = strobe_pwm;
+    }
+
+    puppies::xbuddy_extension.set_rgbw_led({ bed_leds_color.r, bed_leds_color.g, bed_leds_color.b, bed_leds_color.w });
     puppies::xbuddy_extension.set_white_led(chamber_leds_pwm);
     puppies::xbuddy_extension.set_white_strobe_frequency(strobe_freq_);
     puppies::xbuddy_extension.set_usb_power(config_store().xbe_usb_power.get());
@@ -78,7 +109,6 @@ void XBuddyExtension::step() {
     }
 
     // execute control loop only once per defined period
-    const auto now_ms = ticks_ms();
     const bool fan_update_pending = (ticks_diff(now_ms, last_fan_update_ms) >= static_cast<int32_t>(chamber_cooling.dt_s * 1000));
 
     if (fan_update_pending && temp.has_value()) {
@@ -282,6 +312,46 @@ leds::ColorRGBW XBuddyExtension::bed_leds_color() const {
 void XBuddyExtension::set_bed_leds_color(leds::ColorRGBW set) {
     std::lock_guard _lg(mutex_);
     bed_leds_color_ = set;
+}
+
+void XBuddyExtension::set_bed_leds_override(leds::ColorRGBW set, uint32_t duration_ms) {
+    std::lock_guard _lg(mutex_);
+    if (duration_ms == 0) {
+        bed_leds_override_.reset();
+        return;
+    }
+
+    bed_leds_override_ = BedLedsOverride {
+        .color = set,
+        .start_ms = ticks_ms(),
+        .duration_ms = duration_ms,
+    };
+}
+
+uint8_t XBuddyExtension::chamber_leds_percent() const {
+    std::lock_guard _lg(mutex_);
+    return led_pwm2pct(chamber_leds_pwm_);
+}
+
+void XBuddyExtension::set_chamber_leds_percent(uint8_t percent) {
+    std::lock_guard _lg(mutex_);
+    chamber_leds_manual_ = true;
+    chamber_leds_pwm_ = led_pct2pwm(std::min<uint8_t>(percent, 100));
+    chamber_leds_override_.reset();
+}
+
+void XBuddyExtension::set_chamber_leds_override(uint8_t pwm, uint32_t duration_ms) {
+    std::lock_guard _lg(mutex_);
+    if (duration_ms == 0) {
+        chamber_leds_override_.reset();
+        return;
+    }
+
+    chamber_leds_override_ = ChamberLedsOverride {
+        .pwm = pwm,
+        .start_ms = ticks_ms(),
+        .duration_ms = duration_ms,
+    };
 }
 
 void XBuddyExtension::set_strobe(std::optional<uint16_t> freq) {

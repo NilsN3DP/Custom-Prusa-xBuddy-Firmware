@@ -1,7 +1,7 @@
 if(HAS_GEARBOX_ALIGNMENT)
   add_subdirectory(gearbox_alignment)
 endif()
-if(HAS_NOZZLE_CLEANER)
+if(HAS_NOZZLE_CLEANER OR PRINTER STREQUAL "COREONE" OR PRINTER STREQUAL "COREONEL")
   add_subdirectory(nozzle_cleaner)
 endif()
 if(HAS_DOOR_SENSOR_CALIBRATION)

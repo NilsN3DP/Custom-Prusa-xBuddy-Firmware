@@ -105,6 +105,7 @@ namespace transform {
     Pixel swapbw(Pixel pixel);
     Pixel desaturate(Pixel pixel);
     Pixel shadow(Pixel pixel);
+    Pixel theme(Pixel pixel);
 
     /// Apply all rops
     Pixel apply_rop(Pixel pixel, uint8_t rop);

@@ -8374,3 +8374,55 @@ msgstr "не ініціалізовано / %ld"
 #: src/gui/menu_item_xlcd.hpp:11
 msgid "xLCD"
 msgstr "xLCD"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Printed Wiper"
+msgstr "Друкований очищувач"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Test"
+msgstr "Тест очищення сопла"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Cleaning Temp"
+msgstr "Темп. очищення"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Custom Wiper"
+msgstr "Власний очищувач"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "CUSTOM WIPER"
+msgstr "ВЛАСНИЙ ОЧИЩУВАЧ"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start X"
+msgstr "Очищення сопла старт X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Start Y"
+msgstr "Очищення сопла старт Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End X"
+msgstr "Очищення сопла кінець X"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean End Y"
+msgstr "Очищення сопла кінець Y"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Pos"
+msgstr "Поз. очищення сопла"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Passes"
+msgstr "Проходи щітки"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Speed"
+msgstr "Швидкість щітки"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Fan"
+msgstr "Вентилятор щітки"

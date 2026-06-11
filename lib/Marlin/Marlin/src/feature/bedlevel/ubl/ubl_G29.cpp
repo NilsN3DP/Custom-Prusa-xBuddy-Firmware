@@ -70,9 +70,115 @@
 
   #include <math.h>
   #include <algorithm>
+  #include <cstdio>
   #include <logging/log.hpp>
 
   LOG_COMPONENT_REF(Marlin);
+
+  #if PRINTER_IS_PRUSA_COREONE() || PRINTER_IS_PRUSA_COREONEL()
+    enum NozzleCleaningProfile : uint8_t {
+      nozzle_cleaning_standard = 0,
+      nozzle_cleaning_printed_wiper = 1,
+      nozzle_cleaning_custom = 2,
+    };
+
+    static void run_printed_nozzle_wiper() {
+      #if PRINTER_IS_PRUSA_COREONEL()
+        gcode.process_subcommands_now_P(PSTR(
+          "G0 Z3 F8000\n"
+          "G0 Y0 F8000\n"
+          "G0 X30 F8000\n"
+          "G0 Y-7 F8000\n"
+          "G0 Z1 F3000\n"
+          "G0 X2.0\n"
+          "G0 Y-6.3\n"
+          "G0 X30.0\n"
+          "G0 Y-5.0\n"
+          "G0 X26.1\n"
+          "G0 Y-7.0\n"
+          "G0 X22.2\n"
+          "G0 Y-5.0\n"
+          "G0 X18.3\n"
+          "G0 Y-7.0\n"
+          "G0 X14.4\n"
+          "G0 Y-5.0\n"
+          "G0 X10.6\n"
+          "G0 Y-7.0\n"
+          "G0 X6.7\n"
+          "G0 Y-5.0\n"
+          "G0 X2.0\n"
+          "G0 Y-5.0\n"
+          "G0 Z3\n"
+          "G0 Y0\n"
+          "G0 X150\n"));
+      #else
+        gcode.process_subcommands_now_P(PSTR(
+          "G0 Z3 F8000\n"
+          "G0 Y0 F8000\n"
+          "G0 X210 F8000\n"
+          "G0 Y-14 F8000\n"
+          "G0 Z1.5 F3000\n"
+          "G0 X168 Y-16 Z0.5 F3000\n"
+          "G0 X168 Y-14 Z0.5 F3000\n"
+          "G0 X210 Y-16 Z0.5 F3000\n"
+          "G0 X168 Y-14 Z0.5 F3000\n"
+          "G0 X168 Y-16 Z0.5 F3000\n"
+          "G0 X210 Y-14 Z0.5 F3000\n"
+          "G0 X210 Y-14 Z0.5 F3000\n"
+          "G0 X168 Y-16 Z0.5 F3000\n"
+          "G0 X168 Y-14 Z0.5 F3000\n"
+          "G0 X210 Y-18 Z0.5 F3000\n"
+          "G0 X168 Y-16 Z0.5 F3000\n"
+          "G0 X168 Y-16 Z0.5 F3000\n"
+          "G0 X210 Y-14 Z1.5 F3000\n"
+          "G0 Z3 F8000\n"
+          "G0 Y0 F8000\n"
+          "G0 X150 F8000\n"));
+      #endif
+    }
+
+    static void run_custom_nozzle_wiper() {
+      char gcode_buffer[512];
+      std::snprintf(gcode_buffer, sizeof(gcode_buffer),
+        "G0 Z3 F8000\n"
+        "G0 Y0 F8000\n"
+        "G0 X%.2f F8000\n"
+        "G0 Y%.2f F8000\n"
+        "G0 Z1 F3000\n"
+        "G0 X%.2f Y%.2f F3000\n"
+        "G0 X%.2f Y%.2f F3000\n"
+        "G0 X%.2f Y%.2f F3000\n"
+        "G0 X%.2f Y%.2f F3000\n"
+        "G0 Z3 F8000\n"
+        "G0 Y0 F8000\n"
+        "G0 X150 F8000\n",
+        (double)config_store().nozzle_cleaning_custom_start_x.get(),
+        (double)config_store().nozzle_cleaning_custom_start_y.get(),
+        (double)config_store().nozzle_cleaning_custom_end_x.get(),
+        (double)config_store().nozzle_cleaning_custom_end_y.get(),
+        (double)config_store().nozzle_cleaning_custom_start_x.get(),
+        (double)config_store().nozzle_cleaning_custom_start_y.get(),
+        (double)config_store().nozzle_cleaning_custom_end_x.get(),
+        (double)config_store().nozzle_cleaning_custom_end_y.get(),
+        (double)config_store().nozzle_cleaning_custom_start_x.get(),
+        (double)config_store().nozzle_cleaning_custom_start_y.get());
+      gcode.process_subcommands_now(gcode_buffer);
+    }
+
+    static bool run_n3dp_nozzle_cleaning_profile() {
+      switch (config_store().nozzle_cleaning_profile.get()) {
+      case nozzle_cleaning_printed_wiper:
+        run_printed_nozzle_wiper();
+        return true;
+      case nozzle_cleaning_custom:
+        run_custom_nozzle_wiper();
+        return true;
+      case nozzle_cleaning_standard:
+      default:
+        return false;
+      }
+    }
+  #endif
 
   #define UBL_G29_P31
 
@@ -581,7 +687,13 @@
                 // we're going to move to an absolute position: inhibit XYZ repositioning
                 crash_s.set_gcode_replay_flags(Crash_s::RECOVER_AXIS_STATE);
               #endif
-              ubl.g29_nozzle_cleaning_failed |= !cleanup_probe(g29_pos, g29_pos + g29_size);
+              #if PRINTER_IS_PRUSA_COREONE() || PRINTER_IS_PRUSA_COREONEL()
+                if (!run_n3dp_nozzle_cleaning_profile()) {
+                  ubl.g29_nozzle_cleaning_failed |= !cleanup_probe(g29_pos, g29_pos + g29_size);
+                }
+              #else
+                ubl.g29_nozzle_cleaning_failed |= !cleanup_probe(g29_pos, g29_pos + g29_size);
+              #endif
             } else {
               SERIAL_ECHOLNPGM("G29 P9 requires X, Y, W and H arguments");
               return;

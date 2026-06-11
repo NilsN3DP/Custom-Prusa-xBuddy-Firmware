@@ -63,8 +63,6 @@ public:
 protected:
     static constexpr int heating_difference = 2;
 
-    static constexpr std::array<Color, size_t(HeatState::_last) + 1> colors = { { COLOR_WHITE, COLOR_BRAND, COLOR_AZURE, COLOR_GREEN } };
-
     /**
      * @brief Get the State object
      *
@@ -73,10 +71,10 @@ protected:
      * @param display    - target to be displayed (we can preheat to 170 because of MBL, but show 215 as PLA temperature)
      * @param cold       - what temperature is considered as cold - blue flickering
      * @return HeatState - used for text colorization
-     *          - stable  - white color
-     *          - heating - orange color
-     *          - cooling - blue flickering
-     *          - preheat - green flickering
+     *          - stable  - black color
+     *          - heating - brand color
+     *          - cooling - brand color
+     *          - preheat - brand color
      */
     static HeatState getState(int current, int target, int display, int cold); // need signed values for comparison
 
@@ -88,7 +86,7 @@ protected:
 public:
     virtual resized_t updateState() override;
 
-    static inline Color ColorFromState(HeatState st) { return colors[std::min(size_t(st), size_t(HeatState::_last))]; }
+    static Color ColorFromState(HeatState st);
 
     FooterItemHeater(window_t *parent, const img::Resource *icon, view_maker_cb view_maker, reader_cb value_reader);
 };

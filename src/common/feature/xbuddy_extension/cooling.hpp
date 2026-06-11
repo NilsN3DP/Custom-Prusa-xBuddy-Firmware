@@ -15,7 +15,7 @@ public:
     using FanPWM = PWM255;
     using FanPWMOrAuto = PWM255OrAuto;
 
-#if PRINTER_IS_PRUSA_COREONE()
+#if PRINTER_IS_PRUSA_COREONE() || PRINTER_IS_PRUSA_MK4()
     /// Temperature at which the fans start spinning at full speed, no matter what
     static constexpr Temperature overheating_temp = 60.0f;
 

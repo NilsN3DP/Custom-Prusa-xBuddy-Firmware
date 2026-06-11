@@ -2,6 +2,7 @@
 #include "basic_gets.h"
 #include "../nhttp/file_info.h"
 #include "../nhttp/file_command.h"
+#include "../nhttp/gcode_command.h"
 #include "../nhttp/headers.h"
 #include "../nhttp/gcode_upload.h"
 #include "../nhttp/job_command.h"
@@ -26,6 +27,7 @@ using std::string_view;
 using namespace handler;
 using nhttp::printer::FileCommand;
 using nhttp::printer::FileInfo;
+using nhttp::printer::GcodeCommand;
 using nhttp::printer::GcodeUpload;
 using nhttp::printer::JobCommand;
 using transfers::ChangedPath;
@@ -111,6 +113,19 @@ Selector::Accepted PrusaLinkApiOcto::accept(const RequestParser &parser, Step &o
             }
         }
         default:
+            out.next = StatusPage(Status::MethodNotAllowed, StatusPage::CloseHandling::ErrorClose, parser.accepts_json);
+            return Accepted::Accepted;
+        }
+    } else if (suffix == "printer/command") {
+        if (parser.method == Method::Post) {
+            if (parser.content_length.has_value()) {
+                out.next = GcodeCommand(*parser.content_length, parser.can_keep_alive(), parser.accepts_json);
+                return Accepted::Accepted;
+            } else {
+                out.next = StatusPage(Status::LengthRequired, StatusPage::CloseHandling::ErrorClose, parser.accepts_json);
+                return Accepted::Accepted;
+            }
+        } else {
             out.next = StatusPage(Status::MethodNotAllowed, StatusPage::CloseHandling::ErrorClose, parser.accepts_json);
             return Accepted::Accepted;
         }

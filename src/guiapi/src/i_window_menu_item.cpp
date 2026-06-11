@@ -6,6 +6,7 @@
 #include "cmath_ext.h"
 #include "gui_invalidate.hpp"
 #include "img_resources.hpp"
+#include <gui_theme.hpp>
 
 #include <gui/event/focus_event.hpp>
 #include <gui/event/touch_event.hpp>
@@ -222,11 +223,20 @@ void IWindowMenuItem::Print(Rect16 rect) {
         raster_op.swap_bw = IsFocused() ? has_swapped_bw::yes : has_swapped_bw::no;
     }
 
+    const Rect16 item_rect = rect;
     Color mi_color_back = GetBackColor();
     Color mi_color_text = GetTextColor();
 
     if (IsIconInvalid() && IsLabelInvalid() && IsExtensionInvalid()) {
-        render_rounded_rect(rect, GuiDefaults::MenuColorBack, mi_color_back, GuiDefaults::MenuItemCornerRadius, MIC_ALL_CORNERS);
+        render_rounded_rect(rect, gui::theme::background_color(), mi_color_back, GuiDefaults::MenuItemCornerRadius, MIC_ALL_CORNERS);
+        if (!clr_scheme && IsFocused() && IsEnabled()) {
+            Rect16 accent_rect = item_rect;
+            accent_rect = Rect16::Width_t(5);
+            accent_rect += Rect16::Left_t(GuiDefaults::MenuItemCornerRadius);
+            accent_rect += Rect16::Top_t(4);
+            accent_rect -= Rect16::Height_t(8);
+            render_rect(accent_rect, gui::theme::accent_color());
+        }
     }
 
     // Adjust menu item rectangle (simple padding on the sides)
@@ -282,9 +292,9 @@ Color IWindowMenuItem::GetTextColor() const {
     } else if (hidden == (uint8_t)is_hidden_t::dev) {
         ret = GuiDefaults::MenuColorDevelopmentDisabled;
     } else if (IsFocused()) {
-        ret = GuiDefaults::MenuColorBack;
+        ret = gui::theme::text_color();
     } else if (IsEnabled()) {
-        ret = GuiDefaults::MenuColorText;
+        ret = gui::theme::text_color();
     } else {
         ret = GuiDefaults::MenuColorDisabled;
     }
@@ -301,11 +311,7 @@ Color IWindowMenuItem::GetBackColor() const {
         return IsFocused() ? clr_scheme->back.focused : clr_scheme->back.unfocused;
     }
 
-    Color ret = GuiDefaults::MenuColorBack;
-    if (IsFocused()) {
-        ret = IsEnabled() ? GuiDefaults::MenuColorFocusedBack : GuiDefaults::MenuColorDisabled;
-    }
-    return ret;
+    return IsFocused() && !IsEnabled() ? GuiDefaults::MenuColorDisabled : gui::theme::background_color();
 }
 
 void IWindowMenuItem::printIcon(Rect16 icon_rect, ropfn raster_op, Color color_back) const {

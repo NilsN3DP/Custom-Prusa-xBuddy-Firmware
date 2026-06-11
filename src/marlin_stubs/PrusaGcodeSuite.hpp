@@ -17,6 +17,7 @@
 #include <option/has_chamber_vents.h>
 
 #include <gcode/gcode_parser.hpp>
+#include <printers.h>
 
 /// the version of the g-code that the printer supports
 #define GCODE_LEVEL 2
@@ -32,7 +33,7 @@ int8_t get_target_extruder_from_command_p(const GCodeParser2 &p);
  * @{
  */
 
-#if HAS_NOZZLE_CLEANER()
+#if HAS_NOZZLE_CLEANER() || PRINTER_IS_PRUSA_COREONE() || PRINTER_IS_PRUSA_COREONEL()
 void G12(); ///< Nozzle Cleaning
 #endif
 void G26(); //< first layer calibration
@@ -58,6 +59,10 @@ void M150();
 
 #if HAS_SIDE_LEDS()
 void M151();
+#endif
+void M152();
+#if HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
+void M153();
 #endif
 
 #if HAS_CHAMBER_API()

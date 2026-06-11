@@ -25,6 +25,7 @@
 #include <version/version.hpp>
 #include <common/sys.hpp>
 #include <common/w25x.hpp>
+#include <gui_theme.hpp>
 #include <bootloader/bootloader.hpp>
 #include "config_features.h"
 #include <config_store/store_instance.hpp>
@@ -378,6 +379,145 @@ void MI_SORT_FILES::OnChange(size_t old_index) {
     } else if (old_index == WF_SORT_BY_NAME) { // was sorted by name, set by time
         GuiFileSort::Set(WF_SORT_BY_TIME);
     }
+}
+
+/*****************************************************************************/
+// MI_UI_THEME_PRESET
+
+static constexpr EnumArray<gui::theme::ThemePreset, const char *, gui::theme::ThemePreset::_count> ui_theme_preset_items {
+    { gui::theme::ThemePreset::light_mint, N_("Light Mint") },
+    { gui::theme::ThemePreset::dark_mint, N_("Dark Mint") },
+    { gui::theme::ThemePreset::prusa_classic, N_("Prusa Classic") },
+    { gui::theme::ThemePreset::oled_dark, N_("OLED Dark") },
+    { gui::theme::ThemePreset::graphite_cyan, N_("Graphite Cyan") },
+    { gui::theme::ThemePreset::triforce_one, N_("TriForce One") },
+    { gui::theme::ThemePreset::custom, N_("Custom") },
+};
+
+MI_UI_THEME_PRESET::MI_UI_THEME_PRESET()
+    : MenuItemSwitch(_("Theme Preset"), ui_theme_preset_items, std::to_underlying(gui::theme::preset())) {}
+
+void MI_UI_THEME_PRESET::OnChange([[maybe_unused]] size_t old_index) {
+    gui::theme::apply_preset(static_cast<gui::theme::ThemePreset>(get_index()));
+    if (Screens::Access()->Get()) {
+        Screens::Access()->Get()->Invalidate();
+    }
+}
+
+void MI_UI_THEME_PRESET::Loop() {
+    set_index(std::to_underlying(gui::theme::preset()));
+}
+
+/*****************************************************************************/
+// MI_UI_ACCENT_COLOR
+
+static constexpr EnumArray<gui::theme::AccentColor, const char *, gui::theme::AccentColor::_count> ui_accent_color_items {
+    { gui::theme::AccentColor::filament_turquoise, N_("Filament turquoise") },
+    { gui::theme::AccentColor::bright_turquoise, N_("Bright turquoise") },
+    { gui::theme::AccentColor::prusa_orange, N_("Prusa orange") },
+    { gui::theme::AccentColor::blue, N_("Blue") },
+    { gui::theme::AccentColor::green, N_("Green") },
+    { gui::theme::AccentColor::purple, N_("Purple") },
+    { gui::theme::AccentColor::pink, N_("Pink") },
+    { gui::theme::AccentColor::red, N_("Red") },
+    { gui::theme::AccentColor::yellow, N_("Yellow") },
+    { gui::theme::AccentColor::white, N_("White") },
+    { gui::theme::AccentColor::triforce_gold, N_("TriForce gold") },
+    { gui::theme::AccentColor::custom, N_("Custom") },
+};
+
+MI_UI_ACCENT_COLOR::MI_UI_ACCENT_COLOR()
+    : MenuItemSwitch(_("Accent Color"), ui_accent_color_items, std::to_underlying(gui::theme::accent())) {}
+
+void MI_UI_ACCENT_COLOR::OnChange([[maybe_unused]] size_t old_index) {
+    gui::theme::set_accent(static_cast<gui::theme::AccentColor>(get_index()));
+    if (Screens::Access()->Get()) {
+        Screens::Access()->Get()->Invalidate();
+    }
+}
+
+void MI_UI_ACCENT_COLOR::Loop() {
+    set_index(std::to_underlying(gui::theme::accent()));
+}
+
+static constexpr EnumArray<gui::theme::BackgroundColor, const char *, gui::theme::BackgroundColor::_count> ui_background_color_items {
+    { gui::theme::BackgroundColor::white, N_("White") },
+    { gui::theme::BackgroundColor::light_gray, N_("Light gray") },
+    { gui::theme::BackgroundColor::dark_gray, N_("Dark gray") },
+    { gui::theme::BackgroundColor::black, N_("Black") },
+    { gui::theme::BackgroundColor::triforce_green, N_("TriForce green") },
+};
+
+MI_UI_BACKGROUND_COLOR::MI_UI_BACKGROUND_COLOR()
+    : MenuItemSwitch(_("Background Color"), ui_background_color_items, std::to_underlying(gui::theme::background())) {}
+
+void MI_UI_BACKGROUND_COLOR::OnChange([[maybe_unused]] size_t old_index) {
+    gui::theme::set_background(static_cast<gui::theme::BackgroundColor>(get_index()));
+    if (Screens::Access()->Get()) {
+        Screens::Access()->Get()->Invalidate();
+    }
+}
+
+void MI_UI_BACKGROUND_COLOR::Loop() {
+    set_index(std::to_underlying(gui::theme::background()));
+}
+
+static constexpr NumericInputConfig custom_hue_spin_config = {
+    .min_value = 0,
+    .max_value = 359,
+    .step = 5,
+};
+
+static constexpr NumericInputConfig custom_percent_spin_config = {
+    .min_value = 0,
+    .max_value = 100,
+    .step = 5,
+    .unit = Unit::percent,
+};
+
+MI_UI_CUSTOM_HUE::MI_UI_CUSTOM_HUE()
+    : WiSpin(config_store().ui_custom_hue.get(), custom_hue_spin_config, _(label), nullptr, is_enabled_t::yes, is_hidden_t::no) {}
+
+void MI_UI_CUSTOM_HUE::OnClick() {
+    gui::theme::set_custom_hue(static_cast<uint16_t>(GetVal()));
+    gui::theme::set_accent(gui::theme::AccentColor::custom);
+    if (Screens::Access()->Get()) {
+        Screens::Access()->Get()->Invalidate();
+    }
+}
+
+void MI_UI_CUSTOM_HUE::Loop() {
+    set_enabled(gui::theme::accent() == gui::theme::AccentColor::custom);
+}
+
+MI_UI_CUSTOM_SATURATION::MI_UI_CUSTOM_SATURATION()
+    : WiSpin(config_store().ui_custom_saturation.get(), custom_percent_spin_config, _(label), nullptr, is_enabled_t::yes, is_hidden_t::no) {}
+
+void MI_UI_CUSTOM_SATURATION::OnClick() {
+    gui::theme::set_custom_saturation(static_cast<uint8_t>(GetVal()));
+    gui::theme::set_accent(gui::theme::AccentColor::custom);
+    if (Screens::Access()->Get()) {
+        Screens::Access()->Get()->Invalidate();
+    }
+}
+
+void MI_UI_CUSTOM_SATURATION::Loop() {
+    set_enabled(gui::theme::accent() == gui::theme::AccentColor::custom);
+}
+
+MI_UI_CUSTOM_VALUE::MI_UI_CUSTOM_VALUE()
+    : WiSpin(config_store().ui_custom_value.get(), custom_percent_spin_config, _(label), nullptr, is_enabled_t::yes, is_hidden_t::no) {}
+
+void MI_UI_CUSTOM_VALUE::OnClick() {
+    gui::theme::set_custom_value(static_cast<uint8_t>(GetVal()));
+    gui::theme::set_accent(gui::theme::AccentColor::custom);
+    if (Screens::Access()->Get()) {
+        Screens::Access()->Get()->Invalidate();
+    }
+}
+
+void MI_UI_CUSTOM_VALUE::Loop() {
+    set_enabled(gui::theme::accent() == gui::theme::AccentColor::custom);
 }
 
 /*****************************************************************************/
@@ -952,7 +1092,7 @@ void MI_LOG_TO_TXT::OnChange(size_t) {
 
 #if HAS_AUTO_RETRACT()
 MI_PRE_NOZZLE_CLEANING_RETRACT::MI_PRE_NOZZLE_CLEANING_RETRACT()
-    : WI_ICON_SWITCH_OFF_ON_t(config_store().pre_nozzle_cleaning_retraction_enable.get(), _("Nozzle Cleaning Retraction")) {}
+    : WI_ICON_SWITCH_OFF_ON_t(config_store().pre_nozzle_cleaning_retraction_enable.get(), _("Pre-clean Retraction")) {}
 
 void MI_PRE_NOZZLE_CLEANING_RETRACT::OnChange(size_t) {
     config_store().pre_nozzle_cleaning_retraction_enable.set(value());

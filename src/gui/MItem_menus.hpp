@@ -14,6 +14,9 @@
 #include <option/has_mmu2.h>
 #include <option/has_e2ee_support.h>
 #include <option/has_leds_menu.h>
+#include <option/has_chamber_api.h>
+#include <option/has_xbuddy_extension.h>
+#include <option/xbuddy_extension_variant.h>
 #include <img_resources.hpp>
 #include <ScreenFactory.hpp>
 
@@ -193,6 +196,11 @@ using MI_BED_LEVEL_CORRECTION
 #if HAS_LEDS_MENU()
 using MI_LEDS_SETTINGS
     = MI_SCREEN<N_("Lights Settings"), class ScreenMenuLeds>;
+#endif
+
+#if (HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()) || HAS_CHAMBER_API() || HAS_CHAMBER_FILTRATION_API() || HAS_LEDS_MENU()
+using MI_ENCLOSURE_SETTINGS
+    = MI_SCREEN<N_("Enclosure Settings"), class ScreenMenuEnclosure>;
 #endif
 
 class MI_SERIAL_PRINTING_SCREEN_ENABLE : public WI_ICON_SWITCH_OFF_ON_t {

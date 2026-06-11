@@ -4977,6 +4977,192 @@ msgstr "Düse 5 Temperatur"
 msgid "Nozzle Cleaning Retraction"
 msgstr "Düsenreinigung Einzug"
 
+#: src/gui/MItem_tools.cpp
+msgid "Pre-clean Retraction"
+msgstr "Einzug vor Reinigung"
+
+#: src/gui/MItem_tools.cpp
+msgid "Theme Preset"
+msgstr "Theme-Preset"
+
+#: src/gui/MItem_tools.cpp
+msgid "Light Mint"
+msgstr "Mint Hell"
+
+#: src/gui/MItem_tools.cpp
+msgid "Dark Mint"
+msgstr "Mint Dunkel"
+
+#: src/gui/MItem_tools.cpp
+msgid "Prusa Classic"
+msgstr "Prusa Klassisch"
+
+#: src/gui/MItem_tools.cpp
+msgid "OLED Dark"
+msgstr "OLED Dunkel"
+
+#: src/gui/MItem_tools.cpp
+msgid "Graphite Cyan"
+msgstr "Graphit Cyan"
+
+#: src/gui/MItem_tools.cpp
+msgid "TriForce One"
+msgstr "TriForce One"
+
+#: src/gui/MItem_tools.cpp
+msgid "Accent Color"
+msgstr "Akzentfarbe"
+
+#: src/gui/MItem_tools.cpp
+msgid "Filament turquoise"
+msgstr "Filament-Türkis"
+
+#: src/gui/MItem_tools.cpp
+msgid "Bright turquoise"
+msgstr "Helles Türkis"
+
+#: src/gui/MItem_tools.cpp
+msgid "Prusa orange"
+msgstr "Prusa Orange"
+
+#: src/gui/MItem_tools.cpp
+msgid "TriForce gold"
+msgstr "TriForce Gold"
+
+#: src/gui/MItem_tools.cpp
+msgid "Background Color"
+msgstr "Hintergrundfarbe"
+
+#: src/gui/MItem_tools.hpp
+msgid "Custom Hue"
+msgstr "Eigener Farbton"
+
+#: src/gui/MItem_tools.hpp
+msgid "Custom Saturation"
+msgstr "Eigene Sättigung"
+
+#: src/gui/MItem_tools.hpp
+msgid "Custom Brightness"
+msgstr "Eigene Helligkeit"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Top Vent Parts"
+msgstr "Top-Vent-Teile"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Original Parts"
+msgstr "Originalteile"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Modded N3DP Parts"
+msgstr "Modifizierte N3DP-Teile"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Custom Vent Position"
+msgstr "Eigene Vent-Position"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Vent Opener Tuning"
+msgstr "Vent-Öffner einstellen"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Vent Point"
+msgstr "Vent-Punkt"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Move to Vent Point"
+msgstr "Zum Vent-Punkt fahren"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Vent X Position"
+msgstr "Vent-X-Position"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Vent Y Position"
+msgstr "Vent-Y-Position"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Save Vent Position"
+msgstr "Vent-Position speichern"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "VENT OPENER"
+msgstr "VENT-ÖFFNER"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Vent Open"
+msgstr "Vent öffnen"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Vent Close"
+msgstr "Vent schließen"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Open Start"
+msgstr "Öffnen Start"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Open End"
+msgstr "Öffnen Ende"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Close Start"
+msgstr "Schließen Start"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Close End"
+msgstr "Schließen Ende"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Custom Vent"
+msgstr "Eigener Vent"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "CUSTOM VENT"
+msgstr "EIGENER VENT"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Cleaning"
+msgstr "Düsenreinigung"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Printed Wiper"
+msgstr "Gedruckter Wiper"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Nozzle Clean Test"
+msgstr "Düsenreinigung testen"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Cleaning Temp"
+msgstr "Reinigungs-Temp."
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Custom Wiper"
+msgstr "Eigener Wiper"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "CUSTOM WIPER"
+msgstr "EIGENER WIPER"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Passes"
+msgstr "Bürstgänge"
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Speed"
+msgstr "Bürstgeschw."
+
+#: src/gui/screen/toolhead/screen_toolhead_settings.cpp
+msgid "Brush Fan"
+msgstr "Bürstlüfter"
+
+msgid "CFW"
+msgstr "CFW"
+
+msgid "Screenshot Shortcut"
+msgstr "Screenshot-Shortcut"
+
 #: src/gui/screen/toolhead/screen_toolhead_settings.cpp:26
 msgid "Nozzle Diameter"
 msgstr "Düsendurchmesser"

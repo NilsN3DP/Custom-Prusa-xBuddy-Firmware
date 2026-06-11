@@ -105,6 +105,14 @@ bool GcodeSuite::process_parsed_command_custom(bool no_ok) {
             PrusaGcodeSuite::M151();
             break;
 #endif
+        case 152:
+            PrusaGcodeSuite::M152();
+            break;
+#if HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
+        case 153:
+            PrusaGcodeSuite::M153();
+            break;
+#endif
 
 #if HAS_CHAMBER_API()
         case 191:
@@ -347,7 +355,7 @@ bool GcodeSuite::process_parsed_command_custom(bool no_ok) {
         break;
     case 'G':
         switch (parser.codenum) {
-#if HAS_NOZZLE_CLEANER()
+#if HAS_NOZZLE_CLEANER() || PRINTER_IS_PRUSA_COREONE() || PRINTER_IS_PRUSA_COREONEL()
         case 12:
             PrusaGcodeSuite::G12();
             break;

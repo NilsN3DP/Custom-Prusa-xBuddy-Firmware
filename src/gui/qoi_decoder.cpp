@@ -1,4 +1,5 @@
 #include "qoi_decoder.hpp"
+#include <gui_theme.hpp>
 #include <raster_opfn_c.h>
 #include <display_math_helper.h>
 #include <cstring>
@@ -156,7 +157,21 @@ namespace transform {
         return pixel;
     }
 
+    Pixel theme(Pixel pixel) {
+        if (gui::theme::is_source_icon_accent(pixel.r, pixel.g, pixel.b)) {
+            const Color remapped = gui::theme::remap_source_icon_accent(pixel.r, pixel.g, pixel.b);
+            pixel.r = remapped.r;
+            pixel.g = remapped.g;
+            pixel.b = remapped.b;
+        }
+        return pixel;
+    }
+
     Pixel apply_rop(Pixel pixel, uint8_t rop) {
+        if (rop & ROPFN_THEME) {
+            pixel = theme(pixel);
+        }
+
         if (rop & ROPFN_INVERT) {
             pixel = invert(pixel);
         }

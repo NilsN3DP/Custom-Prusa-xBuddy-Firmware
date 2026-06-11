@@ -90,16 +90,16 @@ struct GuiDefaults {
     static constexpr size_t infoDefaultLen = ScreenWidth > 240 ? 22 : 11; // null included, mac address must fit - need to be at least 18
 
     // Color settings
-    static constexpr Color ColorBack = COLOR_BLACK;
-    static constexpr Color ColorText = COLOR_WHITE;
+    static constexpr Color ColorBack = COLOR_WHITE;
+    static constexpr Color ColorText = COLOR_BLACK;
     static constexpr Color ColorDisabled = COLOR_SILVER;
     static constexpr Color ColorSelected = COLOR_BRAND;
-    static constexpr Color COLOR_VALUE_VALID = COLOR_WHITE;
+    static constexpr Color COLOR_VALUE_VALID = COLOR_BLACK;
     static constexpr Color COLOR_VALUE_INVALID = COLOR_DARK_GRAY;
-    static constexpr color_scheme ClickableIconColorScheme = { .normal = ScreenWidth > 240 ? COLOR_DARK_GRAY : COLOR_BLACK, .focused = COLOR_WHITE, .shadowed = ColorBack, .focused_and_shadowed = ColorDisabled };
+    static constexpr color_scheme ClickableIconColorScheme = { .normal = COLOR_DARK_GRAY, .focused = COLOR_BRAND, .shadowed = ColorBack, .focused_and_shadowed = ColorDisabled };
     // Menu color settings
     static constexpr Color MenuColorBack = ColorBack;
-    static constexpr Color MenuColorFocusedBack = COLOR_WHITE;
+    static constexpr Color MenuColorFocusedBack = COLOR_BRAND;
     static constexpr Color MenuColorText = ColorText;
     static constexpr Color MenuColorDisabled = ColorDisabled;
     static constexpr Color MenuColorDevelopment = COLOR_LIGHT_GREEN;
