@@ -117,6 +117,17 @@ See the detailed testing guide in our [comprehensive testing guide].
 
 To install custom firmware, you have to break the appendix on the board. Learn how to in the following article https://help.prusa3d.com/article/zoiw36imrs-flashing-custom-firmware.
 
+## Independent Releases
+
+This codebase can be published from an independent repository and does not need to remain a visible GitHub fork.
+
+- Independent repository hosting is allowed.
+- Derived firmware code remains subject to GPL-3.0 obligations.
+- Reused graphics and design assets remain subject to their original licenses.
+- Public binary releases should be accompanied by the corresponding source code.
+
+For the repository-specific release policy, see [Independent Release Guide](doc/independent-release.md) and [NOTICE](NOTICE).
+
 ## Feedback
 
 - [Feature Requests from Community](https://github.com/prusa3d/Prusa-Firmware-Buddy/labels/feature%20request)

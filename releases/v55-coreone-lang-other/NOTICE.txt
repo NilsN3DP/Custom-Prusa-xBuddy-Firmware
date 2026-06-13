@@ -1,0 +1,15 @@
+N3DP Custom xBuddy Firmware
+Release package for Prusa CORE One
+
+This package is an independent distribution of a modified firmware project based on
+Prusa-Firmware-Buddy.
+
+It is not an official Prusa release.
+
+License reminder:
+- firmware code is derived from GPL-licensed upstream code
+- graphics and design assets may be subject to separate upstream license terms
+
+See:
+- RELEASE_NOTES.md
+- SOURCE_AND_LICENSE.md
