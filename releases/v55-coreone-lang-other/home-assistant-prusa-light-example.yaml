@@ -1,0 +1,104 @@
+# Home Assistant example for the custom Prusa firmware endpoint:
+# POST http://<printer-ip>/api/printer/command
+#
+# Put this into configuration.yaml or split it into your YAML packages.
+# Replace PRUSA_IP and PRUSA_API_KEY, or move them into secrets.yaml.
+
+rest_command:
+  prusa_light_gcode:
+    url: "http://PRUSA_IP/api/printer/command"
+    method: post
+    headers:
+      X-Api-Key: "PRUSA_API_KEY"
+      Content-Type: "application/json"
+    payload: '{"command":"{{ command }}"}'
+
+light:
+  - platform: template
+    lights:
+      prusa_core_one_display:
+        friendly_name: "Prusa CORE One Display"
+
+        turn_on:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: "M152 L0 R255 G255 B255 A0 P0"
+
+        turn_off:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: "M152 L0 R0 G0 B0 A0 P0"
+
+        set_level:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: "M152 L0 R{{ brightness | int }} G{{ brightness | int }} B{{ brightness | int }} A0 P0"
+
+        set_rgb:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: >-
+              {% set br = brightness | default(255) | int %}
+              M152 L0
+              R{{ ((r | int) * br / 255) | round(0) | int }}
+              G{{ ((g | int) * br / 255) | round(0) | int }}
+              B{{ ((b | int) * br / 255) | round(0) | int }}
+              A0 P0
+
+      prusa_core_one_bed:
+        friendly_name: "Prusa CORE One Bed"
+
+        turn_on:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: "M152 L1 R255 G255 B255 D300000"
+
+        turn_off:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: "M152 L1 R0 G0 B0 D300000"
+
+        set_level:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: "M152 L1 R{{ brightness | int }} G{{ brightness | int }} B{{ brightness | int }} D300000"
+
+        set_rgb:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: >-
+              {% set br = brightness | default(255) | int %}
+              M152 L1
+              R{{ ((r | int) * br / 255) | round(0) | int }}
+              G{{ ((g | int) * br / 255) | round(0) | int }}
+              B{{ ((b | int) * br / 255) | round(0) | int }}
+              D300000
+
+      prusa_core_one_chamber:
+        friendly_name: "Prusa CORE One Chamber"
+
+        turn_on:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: "M152 L2 R255 G255 B255 D300000 T100"
+
+        turn_off:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: "M152 L2 R0 G0 B0 D300000 T100"
+
+        set_level:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: "M152 L2 R{{ brightness | int }} G{{ brightness | int }} B{{ brightness | int }} D300000 T100"
+
+        set_rgb:
+          action: rest_command.prusa_light_gcode
+          data:
+            command: >-
+              {% set br = brightness | default(255) | int %}
+              M152 L2
+              R{{ ((r | int) * br / 255) | round(0) | int }}
+              G{{ ((g | int) * br / 255) | round(0) | int }}
+              B{{ ((b | int) * br / 255) | round(0) | int }}
+              D300000 T100
