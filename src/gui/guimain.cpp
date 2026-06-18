@@ -67,8 +67,13 @@ void gui_error_run(void) {
 void gui_run(void) {
     gui_init();
 
-    gui::knob::RegisterHeldLeftAction(TakeAScreenshot);
-    gui::knob::RegisterLongPressScreenAction([]() { Screens::Access()->Open(ScreenFactory::Screen<ScreenMoveZ>); });
+    gui::knob::RegisterHeldLeftAction([]() {
+        Screens::Access()->Open(ScreenFactory::Screen<ScreenMoveZ>);
+        return true;
+    });
+    gui::knob::RegisterLongPressScreenAction([]() {
+        TakeAScreenshot();
+    });
 
     Screens::Init(ScreenFactory::Screen<ScreenSplash>);
     Screens::Access()->PushBeforeCurrent(ScreenFactory::Screen<screen_home_data_t>);

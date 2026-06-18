@@ -86,6 +86,10 @@ dependencies = {
         'version': '2.6.0',
         'url': 'https://prusa-buddy-firmware-dependencies.s3.eu-central-1.amazonaws.com/bootloader-mk4-2.6.0-48C7820D-1C5F-44D5-A4D4-B4C0F8CCB2A6.zip',
     },
+    'bootloader-coreonel': {
+        'version': '2.5.0',
+        'url': 'https://prusa-buddy-firmware-dependencies.s3.eu-central-1.amazonaws.com/bootloader-mk4-2.5.0-F25989EA-595A-4CE4-BF6F-4E5A6E30EDF2.zip',
+    },
     'bootloader-mk3.5': {
         'version': '2.6.0',
         'url': 'https://prusa-buddy-firmware-dependencies.s3.eu-central-1.amazonaws.com/bootloader-mk4-2.6.0-48C7820D-1C5F-44D5-A4D4-B4C0F8CCB2A6.zip',
