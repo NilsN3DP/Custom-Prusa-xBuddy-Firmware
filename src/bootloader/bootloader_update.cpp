@@ -80,17 +80,17 @@ static bool flash_program(const uint8_t *flash_address, const uint8_t *data, siz
 
     while (length) {
         uint32_t program_type;
-        uint64_t block_data;
+        uint64_t block_data = 0;
         size_t block_length;
 
-        if (length > 8 && false) {
+        if (length >= 8) {
             program_type = FLASH_TYPEPROGRAM_DOUBLEWORD;
             memcpy(&block_data, data, sizeof(uint64_t));
             block_length = sizeof(uint64_t);
         } else {
             program_type = FLASH_TYPEPROGRAM_BYTE;
-            memcpy(&block_data, data, sizeof(uint8_t));
-            block_length = sizeof(uint8_t);
+            memcpy(&block_data, data, length);
+            block_length = 1;
         }
 
         if (HAL_FLASH_Program(program_type, (uint32_t)flash_address, block_data) != HAL_OK) {
@@ -191,25 +191,24 @@ static void copy_bootloader_to_flash(FILE *bootloader_bin, ProgressCallback prog
 
         log_info(Bootloader, "Flashing sector %i", sector);
 
-        // add random delay to make preboot flashing less predictable
-        if (sector == 0) {
-            uint32_t delay_ms = 100 + (rand_u() % 7000);
-            osDelay(delay_ms);
-        }
-
         // seek at the sector in the file
         if (fseek(bootloader_bin, bootloader_sector_get_address(sector) - bootloader_sector_get_address(0), SEEK_SET) != 0) {
             fatal_error("bootloader update: failed to seek sector");
         }
 
-        // erase the sector
+        // add random delay to make preboot flashing less predictable
+        if (sector == 0) {
+            uint32_t delay_ms = 100 + (rand_u() % 500);
+            osDelay(delay_ms);
+        }
+
+        // erase and program the sector
         HAL_FLASH_Unlock();
         if (!flash_erase_sector(sector)) {
+            HAL_FLASH_Lock();
             fatal_error("bootloader update: failed to erase sector");
         }
 
-        // program the sector
-        HAL_FLASH_Unlock();
         bool flash_successful = flash_program_sector(sector, bootloader_bin, buffer, [&](size_t bytes_written) {
             if (sector != 0) {
                 // do not report progress for sector 0, as updating preboot is potentially dangerous

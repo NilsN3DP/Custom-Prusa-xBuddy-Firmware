@@ -5,6 +5,25 @@ function(transpile_dsdl)
   # Folder with DSDL data type definitions
   set(DSDL_DIR "${CMAKE_SOURCE_DIR}/src/can/data_types")
 
+  function(resolve_dsdl_namespace input_path output_var)
+    if(IS_DIRECTORY "${input_path}")
+      set(${output_var}
+          "${input_path}"
+          PARENT_SCOPE
+          )
+      return()
+    endif()
+
+    file(READ "${input_path}" linked_path)
+    string(STRIP "${linked_path}" linked_path)
+    cmake_path(ABSOLUTE_PATH linked_path BASE_DIRECTORY "${DSDL_DIR}" NORMALIZE)
+    string(REGEX REPLACE "[/\\]+$" "" linked_path "${linked_path}")
+    set(${output_var}
+        "${linked_path}"
+        PARENT_SCOPE
+        )
+  endfunction()
+
   # Output directory for transpiled C headers.
   set(TRANSPILED_INCLUDE_DIR "${CMAKE_BINARY_DIR}/include/transpiled/")
 
@@ -21,10 +40,12 @@ function(transpile_dsdl)
     little
     "only"
     )
+  resolve_dsdl_namespace("${DSDL_DIR}/uavcan" DSDL_UAVCAN_DIR)
+  resolve_dsdl_namespace("${DSDL_DIR}/prusa3d" DSDL_PRUSA3D_DIR)
   set(dsdl_root_namespace_dirs # List all DSDL root namespaces to transpile here.
-      ${DSDL_DIR}/uavcan
+      ${DSDL_UAVCAN_DIR}
       # Do not use reg types: ${DSDL_DIR}/reg
-      ${DSDL_DIR}/prusa3d
+      ${DSDL_PRUSA3D_DIR}
       )
   foreach(ns_dir ${dsdl_root_namespace_dirs})
     get_filename_component(ns ${ns_dir} NAME)

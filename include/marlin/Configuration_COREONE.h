@@ -476,6 +476,23 @@ static constexpr float EXTRUDER_SERVICE_MOVE_E_FACTOR = 576.f / 550.f;
 #define DEFAULT_AXIS_STEPS_PER_UNIT \
     { 100, 100, 400, 380 }
 #endif
+
+// CORE One auxiliary filament autofeeder on the free ZL stepper port.
+// In the firmware pin map, the physical ZL driver is addressed through Z_STEP/Z_DIR/Z_ENA.
+#define COREONE_AUTOFEEDER
+#if ENABLED(COREONE_AUTOFEEDER)
+    #define COREONE_AUTOFEEDER_STEPS_PER_MM 380.0f
+    #define COREONE_AUTOFEEDER_INVERT_DIR false
+    #define COREONE_AUTOFEEDER_CURRENT 450
+    #define COREONE_AUTOFEEDER_FEEDRATE_MM_S 20.0f
+    #define COREONE_AUTOFEEDER_TIMEOUT_MS 60000UL
+    #define COREONE_AUTOFEEDER_STEP_PULSE_US 3
+    #define COREONE_AUTOFEEDER_MAX_STEP_BURST 32
+    #define COREONE_AUTOFEEDER_CALIBRATION_DEFAULT_DISTANCE_MM 0.0f
+    #define COREONE_AUTOFEEDER_CALIBRATION_MAX_DEVIATION_MM 0.0f
+    #define COREONE_AUTOFEEDER_CALIBRATION_MAX_DEVIATION_PCT 20.0f
+#endif
+
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203

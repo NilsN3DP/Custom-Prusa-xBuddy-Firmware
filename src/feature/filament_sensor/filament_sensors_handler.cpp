@@ -5,6 +5,7 @@
  * I would normally use inheritance, but last time i did that it was rewritten, so I am using this approach now.
  */
 
+#include <feature/filament_sensor/autofeeder.hpp>
 #include <feature/filament_sensor/filament_sensors_handler.hpp>
 #include <tasks.hpp>
 #include <logging/log.hpp>
@@ -156,6 +157,9 @@ void FilamentSensors::step() {
         logical_sensor_states_.array[i] = fs ? fs->get_state() : FilamentSensorState::Disabled;
     }
 
+    // CORE One autofeeder consumes fresh logical sensor states before normal autoload is considered.
+    buddy::autofeeder::cycle();
+
     process_events();
 }
 
@@ -246,11 +250,16 @@ void FilamentSensors::process_events() {
         const bool extruder_fs_no_filament = !extruder_fs || extruder_fs->get_state() == FilamentSensorState::NoFilament;
 
         const bool side_fs_enabled = side_fs && side_fs->is_enabled();
-        const bool side_fs_inserted = side_fs && side_fs->last_event() == IFSensor::Event::filament_inserted;
         const bool side_fs_has_filament = side_fs && side_fs->get_state() == FilamentSensorState::HasFilament;
 
+        // With the auxiliary feeder enabled, side-sensor insertion first feeds to the Nextruder sensor.
+        // The normal M1701 autoload is allowed once the Nextruder/extruder sensor reports insertion.
         const bool trigger_autoload = (extruder_fs_inserted && (!side_fs_enabled || side_fs_has_filament))
-            || (side_fs_inserted && extruder_fs_no_filament);
+#if DISABLED(COREONE_AUTOFEEDER)
+            || ((side_fs && side_fs->last_event() == IFSensor::Event::filament_inserted)
+                && (extruder_fs && extruder_fs->get_state() == FilamentSensorState::NoFilament))
+#endif
+            ;
 
         if (!trigger_autoload
             || has_mmu

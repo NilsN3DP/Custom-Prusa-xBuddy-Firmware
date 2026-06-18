@@ -117,7 +117,7 @@ function(
 
 endfunction(create_dsdl_target)
 
-find_program(NNVG nnvg PATHS ${Python3_ROOT_DIR}/bin)
+find_program(NNVG nnvg PATHS ${Python3_ROOT_DIR}/Scripts ${Python3_ROOT_DIR}/bin)
 message(STATUS "Nnvg: ${NNVG}")
 
 if(NNVG)

@@ -1,0 +1,29 @@
+Custom Prusa xBuddy Firmware
+
+This repository is an independent distribution path for a modified firmware project
+based on Prusa-Firmware-Buddy.
+
+Upstream origin:
+- Project: Prusa-Firmware-Buddy
+- Publisher: Prusa Research / prusa3d
+
+Important licensing split:
+- Firmware source code in this repository is derived from software distributed under GPL-3.0.
+- Graphics, design assets, and other non-code materials inherited from upstream may be
+  subject to separate licenses, including CC BY-NC-SA 4.0, as documented in LICENSE.md.
+- Fonts and bundled third-party components may use additional licenses. See LICENSE.md
+  and the license files inside bundled dependencies.
+
+Trademark and affiliation notice:
+- This repository is not an official Prusa repository.
+- "Prusa", "Original Prusa", "Prusa MK4", "Prusa XL", and related marks are trademarks
+  of their respective owners.
+- Any upstream names are used only to describe compatibility, origin, or supported hardware.
+
+Distribution note:
+- Public binary releases from this repository should always be accompanied by the
+  corresponding source code and these notices.
+- If upstream graphics or design assets are reused, their original license terms remain in effect.
+
+This file is intended as a practical notice for downstream users and release packaging.
+It is not legal advice.

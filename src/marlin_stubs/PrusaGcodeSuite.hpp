@@ -129,6 +129,7 @@ void M864(); //< spool join control
 #endif
 
 void M865(); //< Set up ad-hoc filament
+void M8600(); //< CORE One auxiliary filament autofeeder control
 
 #if HAS_CHAMBER_VENTS()
 void M870(); ///< Open or close ventilation intake

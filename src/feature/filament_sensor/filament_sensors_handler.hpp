@@ -56,6 +56,8 @@ public:
 
     void DecAutoloadLock();
     void IncAutoloadLock();
+    // CORE One autofeeder must not start while normal autoload is explicitly locked.
+    inline bool IsAutoloadLocked() const { return autoload_lock > 0; }
 
     // calling clear of m600 and autoload flags is safe from any thread, but setting them would not be !!!
     void ClrM600Sent() { m600_sent = false; }

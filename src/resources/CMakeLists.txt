@@ -129,8 +129,9 @@ if(${TRANSLATIONS_ENABLED})
       set(MO_FILE "${CMAKE_CURRENT_BINARY_DIR}/${LANG}.mo")
       add_custom_command(
         OUTPUT ${MO_FILE}
-        COMMAND msgfmt ${PO_FILE} -o ${MO_FILE}
-        DEPENDS ${PO_FILE}
+        COMMAND "${Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/utils/msgfmt_polib.py" "${PO_FILE}"
+                -o "${MO_FILE}"
+        DEPENDS ${PO_FILE} "${CMAKE_SOURCE_DIR}/utils/msgfmt_polib.py"
         COMMENT "Generating ${MO_FILE} from ${PO_FILE}"
         VERBATIM
         )
