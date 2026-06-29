@@ -6,6 +6,7 @@
 #include "cmath_ext.h"
 #include "gui_invalidate.hpp"
 #include "img_resources.hpp"
+#include <gui_theme.hpp>
 
 #include <gui/event/focus_event.hpp>
 #include <gui/event/touch_event.hpp>
@@ -279,7 +280,7 @@ void IWindowMenuItem::Print(Rect16 rect) {
     Color mi_color_text = focused ? scheme->text.focused : scheme->text.unfocused;
 
     if (IsIconInvalid() && IsLabelInvalid() && IsExtensionInvalid()) {
-        render_rounded_rect(rect, GuiDefaults::MenuColorBack, mi_color_back, GuiDefaults::MenuItemCornerRadius, MIC_ALL_CORNERS);
+        render_rounded_rect(rect, gui::theme::background_color(), mi_color_back, GuiDefaults::MenuItemCornerRadius, MIC_ALL_CORNERS);
     }
 
     // Adjust menu item rectangle (simple padding on the sides)

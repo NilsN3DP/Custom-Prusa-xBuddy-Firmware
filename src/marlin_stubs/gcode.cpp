@@ -21,6 +21,8 @@
 #include <option/has_spool_join.h>
 #include <option/has_indx.h>
 #include <option/has_wastebin_fill_tracking.h>
+#include <option/has_xbuddy_extension.h>
+#include <option/xbuddy_extension_variant.h>
 
 #if HAS_LOADCELL()
     #include "loadcell.hpp"
@@ -114,6 +116,14 @@ bool GcodeSuite::process_parsed_command_custom(bool no_ok) {
 #if HAS_SIDE_LEDS()
         case 151:
             PrusaGcodeSuite::M151();
+            break;
+#endif
+        case 152:
+            PrusaGcodeSuite::M152();
+            break;
+#if HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
+        case 153:
+            PrusaGcodeSuite::M153();
             break;
 #endif
 

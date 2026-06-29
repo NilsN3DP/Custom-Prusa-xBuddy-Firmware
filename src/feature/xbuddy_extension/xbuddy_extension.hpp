@@ -104,6 +104,12 @@ public: // LEDs
     /// Sets PWM for the led strip that is under the bed
     void set_bed_leds_color(leds::ColorRGBW set);
 
+    /// \returns current manual chamber light value, converted to percentage.
+    uint8_t chamber_leds_percent() const;
+
+    /// Sets the chamber white LED output manually.
+    void set_chamber_leds_percent(uint8_t percent);
+
     /// Sets the white led strobe mode.
     ///
     /// * If set to nullopt, strobe mode is disabled. Led goes to shining
@@ -169,6 +175,8 @@ private:
 
 #if XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
     leds::ColorRGBW bed_leds_color_;
+    bool chamber_leds_manual_ = false;
+    uint8_t chamber_leds_pwm_ = 0;
     std::optional<uint16_t> strobe_freq_ = std::nullopt;
 
     FanCooling chamber_cooling;

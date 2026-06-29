@@ -33,6 +33,7 @@ private:
     bool usbInserted;
     bool event_in_progress { false };
     bool first_event { true };
+    uint32_t theme_generation { 0 };
     static bool need_check_wifi_credentials;
     MediaState_t media_event { MediaState_t::unknown };
 

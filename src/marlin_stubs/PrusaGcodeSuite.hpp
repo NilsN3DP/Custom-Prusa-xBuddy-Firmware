@@ -20,6 +20,8 @@
 #include <option/has_spool_join.h>
 #include <option/has_indx.h>
 #include <option/has_wastebin_fill_tracking.h>
+#include <option/has_xbuddy_extension.h>
+#include <option/xbuddy_extension_variant.h>
 
 #include <gcode/gcode_parser.hpp>
 
@@ -65,6 +67,10 @@ void M150();
 
 #if HAS_SIDE_LEDS()
 void M151();
+#endif
+void M152();
+#if HAS_XBUDDY_EXTENSION() && XBUDDY_EXTENSION_VARIANT_IS_STANDARD()
+void M153();
 #endif
 
 #if HAS_CHAMBER_API()

@@ -53,7 +53,10 @@ void XBuddyExtension::step() {
 
     std::lock_guard _lg(mutex_);
 
-    const auto chamber_leds_pwm = strobe_freq_.has_value() ? strobe_pwm : leds::SideStripHandler::instance().color().w;
+    uint8_t chamber_leds_pwm = chamber_leds_manual_ ? chamber_leds_pwm_ : leds::SideStripHandler::instance().color().w;
+    if (strobe_freq_.has_value()) {
+        chamber_leds_pwm = strobe_pwm;
+    }
 
     if (status() != Status::ready) {
         return;
@@ -297,6 +300,18 @@ leds::ColorRGBW XBuddyExtension::bed_leds_color() const {
 void XBuddyExtension::set_bed_leds_color(leds::ColorRGBW set) {
     std::lock_guard _lg(mutex_);
     bed_leds_color_ = set;
+}
+
+uint8_t XBuddyExtension::chamber_leds_percent() const {
+    std::lock_guard _lg(mutex_);
+    const uint8_t pwm = chamber_leds_manual_ ? chamber_leds_pwm_ : leds::SideStripHandler::instance().color().w;
+    return led_pwm2pct(pwm);
+}
+
+void XBuddyExtension::set_chamber_leds_percent(uint8_t percent) {
+    std::lock_guard _lg(mutex_);
+    chamber_leds_manual_ = true;
+    chamber_leds_pwm_ = led_pct2pwm(percent);
 }
 
 void XBuddyExtension::set_strobe(std::optional<uint16_t> freq) {

@@ -61,6 +61,7 @@
 #include <find_error.hpp>
 #include <transfers/transfer_file_check.hpp>
 #include <guiconfig/guiconfig.h>
+#include <gui_theme.hpp>
 
 #include "usb_host.h"
 
@@ -224,6 +225,8 @@ screen_home_data_t::screen_home_data_t()
         { this, Rect16(), is_multiline::no }
     } {
     // clang-format on
+
+    theme_generation = gui::theme::generation();
 
     EnableLongHoldScreenAction();
     window_frame_t::ClrMenuTimeoutClose();
@@ -485,6 +488,12 @@ void screen_home_data_t::windowEvent(window_t *sender, GUI_event_t event, void *
     }
 
     if (event == GUI_event_t::LOOP) {
+        const uint32_t current_theme_generation = gui::theme::generation();
+        if (theme_generation != current_theme_generation) {
+            theme_generation = current_theme_generation;
+            Invalidate();
+        }
+
         filamentBtnSetState();
 
 #if ENABLED(POWER_PANIC)

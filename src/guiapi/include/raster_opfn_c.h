@@ -11,4 +11,5 @@ enum {
     ROPFN_SWAPBW = 0x02, // swap black-white
     ROPFN_SHADOW = 0x04, // darker colors
     ROPFN_DESATURATE = 0x10, // desaturate (color average)
+    ROPFN_THEME = 0x20, // remap source theme accent to the selected UI accent
 };
