@@ -16,9 +16,14 @@
 #include <array>
 #include "Marlin/src/libs/stopwatch.h"
 
+#include <option/has_autofeeder.h>
 #include <option/has_human_interactions.h>
 #include <option/has_nozzle_cleaner.h>
 #include <option/has_side_fsensor.h>
+
+#if HAS_AUTOFEEDER()
+    #include <feature/autofeeder/autofeeder_load.hpp>
+#endif
 
 #include <utils/progress_mapper.hpp>
 
@@ -54,6 +59,9 @@ public:
         unload_nozzle_clean,
 #endif
         unload_finish_or_change,
+#if HAS_AUTOFEEDER()
+        autofeeder_retract,
+#endif
         load_start,
         filament_push_ask, // must be one phase because of button click
         await_filament,
@@ -133,6 +141,15 @@ class Pause : public PausePrivatePhase {
     /// How much filament was retracted thanks to ramming
     float ram_retracted_distance = 0;
 
+#if HAS_AUTOFEEDER()
+    /// Drives the external filament feeder during load and unload.
+    buddy::autofeeder::FeedOperation autofeeder_operation { buddy::autofeeder::instance() };
+
+    /// The feeder already ran a load to its end during this process; do not
+    /// start it over and over while the state machine waits.
+    bool autofeeder_load_done = false;
+#endif
+
     // singleton
     Pause() = default;
     Pause(const Pause &) = delete;
@@ -205,6 +222,18 @@ private:
     void unload_nozzle_clean_process(Response response);
 #endif
     void unload_finish_or_change_process(Response response);
+#if HAS_AUTOFEEDER()
+    void autofeeder_retract_process(Response response);
+
+    /// Whether a feeder channel exists for the tool being loaded/unloaded.
+    bool autofeeder_has_channel() const;
+
+    /// Runs the feeder while the load waits for filament at the side sensor.
+    /// \returns whether the caller may continue with its own processing
+    ///          (false = stay in this state, the feeder is still working or the
+    ///          state has already been changed).
+    bool autofeeder_assist_load();
+#endif
     void load_start_process(Response response);
     void filament_push_ask_process(Response response);
     void await_filament_process(Response response);
@@ -250,6 +279,9 @@ private:
             { LoadState::unload_nozzle_clean, &Pause::unload_nozzle_clean_process },
 #endif
             { LoadState::unload_finish_or_change, &Pause::unload_finish_or_change_process },
+#if HAS_AUTOFEEDER()
+            { LoadState::autofeeder_retract, &Pause::autofeeder_retract_process },
+#endif
             { LoadState::load_start, &Pause::load_start_process },
             { LoadState::filament_push_ask, &Pause::filament_push_ask_process },
             { LoadState::await_filament, &Pause::await_filament_process },

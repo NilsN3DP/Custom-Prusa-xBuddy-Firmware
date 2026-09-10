@@ -12,6 +12,7 @@
 #include "metric.h"
 #include <option/has_gearbox_alignment.h>
 #include <option/has_loadcell.h>
+#include <option/has_autofeeder.h>
 #include <option/has_toolchanger.h>
 #include <option/has_side_leds.h>
 #include <option/has_leds.h>
@@ -282,6 +283,11 @@ bool GcodeSuite::process_parsed_command_custom(bool no_ok) {
         case 1703:
             PrusaGcodeSuite::M1703();
             break;
+#if HAS_AUTOFEEDER()
+        case 1720:
+            PrusaGcodeSuite::M1720();
+            break;
+#endif
 #if HAS_INPUT_SHAPER_CALIBRATION()
         case 1959:
             PrusaGcodeSuite::M1959();

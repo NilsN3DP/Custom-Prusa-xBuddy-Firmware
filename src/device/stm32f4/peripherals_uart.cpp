@@ -4,6 +4,7 @@
 #include <device/board.h>
 #include <device/hal.h>
 #include <espif.h>
+#include <option/has_autofeeder.h>
 #include <option/has_mmu2.h>
 #include <option/has_mmu2_over_uart.h>
 #include <option/has_puppies.h>
@@ -29,6 +30,11 @@
 #elif BOARD_IS_XLBUDDY()
     #define UART_PUPPIES USART3
     #define UART_ESP     UART8
+    #if HAS_AUTOFEEDER()
+        // PC6/PC7. Not used by anything else on xlBuddy, but there is no
+        // dedicated connector for it either - see doc/autofeeder.md.
+        #define UART_AUTOFEEDER USART6
+    #endif
 #else
     #error "Unknown board"
 #endif
@@ -109,6 +115,32 @@ void uart_init_mmu() {
 }
 #endif
 
+#if HAS_AUTOFEEDER()
+UART_HandleTypeDef uart_handle_for_autofeeder;
+// One frame of the autofeeder protocol is at most 39 bytes; this holds a few.
+static uint8_t uart_for_autofeeder_rx_data[128];
+buddy::hw::BufferedSerial uart_for_autofeeder {
+    &uart_handle_for_autofeeder,
+    nullptr,
+    uart_for_autofeeder_rx_data,
+    sizeof(uart_for_autofeeder_rx_data),
+    buddy::hw::BufferedSerial::CommunicationMode::DMA,
+};
+void uart_init_autofeeder() {
+    uart_handle_for_autofeeder.Instance = UART_AUTOFEEDER;
+    uart_handle_for_autofeeder.Init.BaudRate = 115'200;
+    uart_handle_for_autofeeder.Init.WordLength = UART_WORDLENGTH_8B;
+    uart_handle_for_autofeeder.Init.StopBits = UART_STOPBITS_1;
+    uart_handle_for_autofeeder.Init.Parity = UART_PARITY_NONE;
+    uart_handle_for_autofeeder.Init.Mode = UART_MODE_TX_RX;
+    uart_handle_for_autofeeder.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    uart_handle_for_autofeeder.Init.OverSampling = UART_OVERSAMPLING_16;
+    if (HAL_UART_Init(&uart_handle_for_autofeeder) != HAL_OK) {
+        Error_Handler();
+    }
+}
+#endif
+
 UART_HandleTypeDef uart_handle_for_esp;
 void uart_init_esp() {
     uart_handle_for_esp.Instance = UART_ESP;
@@ -147,6 +179,12 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     }
 #endif
 
+#if HAS_AUTOFEEDER()
+    if (huart == &uart_handle_for_autofeeder) {
+        uart_for_autofeeder.WriteFinishedISR();
+    }
+#endif
+
     if (huart == &uart_handle_for_esp) {
         return espif_tx_callback();
     }
@@ -170,6 +208,12 @@ void HAL_UART_RxHalfCpltCallback([[maybe_unused]] UART_HandleTypeDef *huart) {
         uart_for_mmu.FirstHalfReachedISR();
     }
 #endif
+
+#if HAS_AUTOFEEDER()
+    if (huart == &uart_handle_for_autofeeder) {
+        uart_for_autofeeder.FirstHalfReachedISR();
+    }
+#endif
 }
 
 void HAL_UART_RxCpltCallback([[maybe_unused]] UART_HandleTypeDef *huart) {
@@ -188,6 +232,12 @@ void HAL_UART_RxCpltCallback([[maybe_unused]] UART_HandleTypeDef *huart) {
 #if HAS_MMU2_OVER_UART()
     if (huart == &uart_handle_for_mmu) {
         uart_for_mmu.SecondHalfReachedISR();
+    }
+#endif
+
+#if HAS_AUTOFEEDER()
+    if (huart == &uart_handle_for_autofeeder) {
+        uart_for_autofeeder.SecondHalfReachedISR();
     }
 #endif
 }

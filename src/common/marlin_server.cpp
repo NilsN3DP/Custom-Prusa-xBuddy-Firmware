@@ -39,6 +39,10 @@
 #include <utils/string_builder.hpp>
 #include <utils/mutex_atomic.hpp>
 #include <feature/safety_timer/safety_timer.hpp>
+#include <option/has_autofeeder.h>
+#if HAS_AUTOFEEDER()
+    #include <feature/autofeeder/autofeeder.hpp>
+#endif
 #include <feature/stepper_timeout/stepper_timeout.hpp>
 
 #include "../Marlin/src/lcd/extensible_ui/ui_api.h"
@@ -791,6 +795,10 @@ static void cycle() {
 
 #if XBUDDY_EXTENSION_VARIANT_STANDARD()
     buddy::xbuddy_extension().step();
+#endif
+
+#if HAS_AUTOFEEDER()
+    buddy::autofeeder::instance().step(ticks_ms());
 #endif
 
     buddy::safety_timer().step();

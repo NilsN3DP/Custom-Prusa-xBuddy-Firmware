@@ -480,6 +480,68 @@ void Pause::filament_push_ask_process(Response response) {
     }
 }
 
+#if HAS_AUTOFEEDER()
+bool Pause::autofeeder_has_channel() const {
+    using namespace buddy::autofeeder;
+
+    const uint8_t channel = settings.GetExtruder();
+    return instance().is_connected() && channel < instance().channel_count();
+}
+
+bool Pause::autofeeder_assist_load() {
+    using namespace buddy::autofeeder;
+
+    if (!autofeeder_has_channel()) {
+        // No feeder for this tool - the user pushes the filament in by hand,
+        // exactly as on a printer without one.
+        return true;
+    }
+
+    // The operation already ran to an end during this load; do not restart it.
+    if (autofeeder_load_done) {
+        return true;
+    }
+
+    const uint8_t channel = settings.GetExtruder();
+
+    if (!autofeeder_operation.is_busy()) {
+        // Nothing to push yet - wait for the user to put filament into the feeder.
+        if (!instance().status(channel).filament_at_inlet) {
+            return true;
+        }
+
+        if (!autofeeder_operation.start_load(channel, ticks_ms())) {
+            autofeeder_load_done = true;
+            return true;
+        }
+    }
+
+    const FeedResult result = autofeeder_operation.step(
+        ticks_ms(), FSensors_instance().has_filament_surely(LogicalFilamentSensor::side));
+
+    if (!is_finished(result)) {
+        // Keep waiting in this state while the feeder pushes.
+        return false;
+    }
+
+    if (result == FeedResult::no_filament) {
+        // The user pulled the filament back out again. Stay ready to feed once
+        // they put it back in, exactly like the manual insertion path.
+        return true;
+    }
+
+    autofeeder_load_done = true;
+
+    if (is_failure(result)) {
+        marlin_server::set_warning(WarningType::FilamentLoadingTimeout);
+        set(LoadState::stop);
+        return false;
+    }
+
+    return true;
+}
+#endif
+
 void Pause::await_filament_process([[maybe_unused]] Response response) {
     setPhase(is_unstoppable() ? PhasesLoadUnload::AwaitingFilament_unstoppable : PhasesLoadUnload::AwaitingFilament_stoppable);
     // If EXTRUDER sensor is not assigned or not working, or if the user fails to insert filament in time, show Warning and quit loading.
@@ -488,6 +550,12 @@ void Pause::await_filament_process([[maybe_unused]] Response response) {
         set(LoadState::stop);
         return;
     }
+
+#if HAS_AUTOFEEDER()
+    if (!autofeeder_assist_load()) {
+        return;
+    }
+#endif
 
     // Either side sensor not working or it has filament, go to loading
     if (!FSensors_instance().no_filament_surely(LogicalFilamentSensor::side)) {
@@ -867,6 +935,10 @@ void Pause::load_nozzle_clean_process([[maybe_unused]] Response response) {
 #endif
 
 void Pause::stop_process([[maybe_unused]] Response response) {
+#if HAS_AUTOFEEDER()
+    autofeeder_operation.abort();
+#endif
+
     if (!planner.busy()) {
         // The printer is not moving, we don't need to do anything drastic and lose homing.
         set(LoadState::_stopped);
@@ -1044,10 +1116,45 @@ void Pause::unload_nozzle_clean_process([[maybe_unused]] Response response) {
 void Pause::unload_finish_or_change_process([[maybe_unused]] Response response) {
     if (load_type == LoadType::filament_change || load_type == LoadType::filament_stuck) {
         set(LoadState::load_start);
-    } else {
-        set(LoadState::_finished);
+        return;
     }
+
+#if HAS_AUTOFEEDER()
+    // A plain unload leaves the filament sitting in the tube between the feeder
+    // and the tool. Pull it back to the feeder inlet so that the user can take
+    // the spool off without fighting a metre of filament.
+    if (autofeeder_has_channel()
+        && autofeeder_operation.start_retract(settings.GetExtruder(), ticks_ms())) {
+        set(LoadState::autofeeder_retract);
+        return;
+    }
+#endif
+
+    set(LoadState::_finished);
 }
+
+#if HAS_AUTOFEEDER()
+void Pause::autofeeder_retract_process([[maybe_unused]] Response response) {
+    using namespace buddy::autofeeder;
+
+    setPhase(PhasesLoadUnload::Unloading_stoppable);
+
+    const FeedResult result = autofeeder_operation.step(
+        ticks_ms(), FSensors_instance().has_filament_surely(LogicalFilamentSensor::side));
+
+    if (!is_finished(result)) {
+        return;
+    }
+
+    if (is_failure(result)) {
+        // The filament is out of the extruder either way, so the unload itself
+        // succeeded; the user just has to pull the rest out of the tube.
+        marlin_server::set_warning(WarningType::FilamentLoadingTimeout);
+    }
+
+    set(LoadState::_finished);
+}
+#endif
 
 void Pause::filament_not_in_fs_process(Response response) {
     setPhase(PhasesLoadUnload::FilamentNotInFS);
@@ -1129,6 +1236,11 @@ bool Pause::invoke_loop() {
 
     // Prevent the "waiting for temperature restore" from triggering - the Pause manages temperature safety for extrusion internally
     buddy::SafetyTimerNonBlockingGuard non_blocking_guard;
+
+#if HAS_AUTOFEEDER()
+    autofeeder_operation.abort();
+    autofeeder_load_done = false;
+#endif
 
     set(LoadState::start);
 

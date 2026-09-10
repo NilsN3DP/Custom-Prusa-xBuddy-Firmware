@@ -3,6 +3,7 @@
 #include <device/peripherals.h>
 #include <device/peripherals_uart.hpp>
 #include <option/buddy_enable_wui.h>
+#include <option/has_autofeeder.h>
 #include <option/has_burst_stepping.h>
 
 #if BUDDY_ENABLE_WUI()
@@ -56,6 +57,20 @@ void uart_for_puppies_idle_isr() {
 BARE_ISR(USART3_IRQHandler, HAL_UART_IRQHandler_with_idle, &uart_handle_for_puppies, uart_for_puppies_idle_isr);
 BARE_ISR(DMA1_Stream1_IRQHandler, HAL_DMA_IRQHandler, uart_handle_for_puppies.hdmarx);
 BARE_ISR(DMA1_Stream3_IRQHandler, HAL_DMA_IRQHandler, uart_handle_for_puppies.hdmatx);
+
+#if HAS_AUTOFEEDER()
+
+// UART for the external autofeeder controller (USART6, DMA2 streams 2 and 7).
+// Neither DMA stream is claimed by anything else on xlBuddy.
+void uart_for_autofeeder_idle_isr() {
+    uart_for_autofeeder.IdleISR();
+}
+
+TRACED_ISR(USART6_IRQHandler, HAL_UART_IRQHandler_with_idle, &uart_handle_for_autofeeder, uart_for_autofeeder_idle_isr);
+TRACED_ISR(DMA2_Stream2_IRQHandler, HAL_DMA_IRQHandler, uart_handle_for_autofeeder.hdmarx);
+TRACED_ISR(DMA2_Stream7_IRQHandler, HAL_DMA_IRQHandler, uart_handle_for_autofeeder.hdmatx);
+
+#endif
 
 #if BUDDY_ENABLE_WUI()
 

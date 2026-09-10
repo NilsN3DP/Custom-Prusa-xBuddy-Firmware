@@ -40,6 +40,7 @@
 #include <buddy/logging.h>
 #include <i2c.hpp>
 #include <option/buddy_enable_connect.h>
+#include <option/has_autofeeder.h>
 #include <option/has_puppies.h>
 #include <option/has_puppies_bootloader.h>
 #include <option/filament_sensor.h>
@@ -78,6 +79,9 @@
 #if HAS_PUPPIES()
     #include "puppies/PuppyBus.hpp"
     #include "puppies/puppy_task.hpp"
+#endif
+#if HAS_AUTOFEEDER()
+    #include <feature/autofeeder/autofeeder_uart.hpp>
 #endif
 #if ENABLED(RESOURCES())
     #include "resources/bootstrap.hpp"
@@ -397,6 +401,11 @@ extern "C" void main_cpp(void) {
 #if HAS_PUPPIES()
     uart_init_puppies();
     buddy::puppies::PuppyBus::Open();
+#endif
+
+#if HAS_AUTOFEEDER()
+    uart_init_autofeeder();
+    buddy::autofeeder::init_uart_transport();
 #endif
 
     hw_rtc_init();

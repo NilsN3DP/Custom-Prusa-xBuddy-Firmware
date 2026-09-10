@@ -2,6 +2,7 @@
 
 #include <device/hal.h>
 #include <hw/buffered_serial.hpp>
+#include <option/has_autofeeder.h>
 #include <option/has_mmu2.h>
 #include <option/has_mmu2_over_uart.h>
 #include <option/has_puppies.h>
@@ -23,6 +24,12 @@ void uart_init_puppies();
 extern UART_HandleTypeDef uart_handle_for_mmu;
 extern buddy::hw::BufferedSerial uart_for_mmu;
 void uart_init_mmu();
+#endif
+
+#if HAS_AUTOFEEDER()
+extern UART_HandleTypeDef uart_handle_for_autofeeder;
+extern buddy::hw::BufferedSerial uart_for_autofeeder;
+void uart_init_autofeeder();
 #endif
 
 extern UART_HandleTypeDef uart_handle_for_esp;

@@ -338,6 +338,18 @@ set_feature_for_printers(HAS_SIDE_FSENSOR "iX" "XL" "COREONE")
 set_feature_for_printers(HAS_ADC_SIDE_FSENSOR "XL")
 set_feature_for_printers(HAS_FILAMENT_SENSORS_MENU "XL" "COREONE")
 
+# AUTOFEEDER is an external, motorised filament feeder that pushes filament from
+# the spool all the way to the side filament sensor and pulls it back on unload.
+# It is an aftermarket add-on, so it is off by default even on the printers that
+# can use it; enable it explicitly with -DHAS_AUTOFEEDER=YES.
+set_feature_for_printers_master_board(HAS_AUTOFEEDER)
+if(HAS_AUTOFEEDER AND NOT HAS_SIDE_FSENSOR)
+  message(
+    FATAL_ERROR
+      "HAS_AUTOFEEDER needs a side filament sensor to detect that the filament has arrived."
+    )
+endif()
+
 # iX does not need ESP flashing
 set_feature_for_printers(HAS_ESP_FLASH_TASK "MK4" "MK3.5" "XL" "MINI" "COREONE")
 
