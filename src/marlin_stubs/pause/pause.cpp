@@ -456,6 +456,16 @@ void Pause::filament_push_ask_process(Response response) {
         setPhase(is_unstoppable() ? PhasesLoadUnload::MakeSureInserted_unstoppable : PhasesLoadUnload::MakeSureInserted_stoppable);
         handle_help(response);
 
+#if HAS_AUTOFEEDER()
+        // This is where a menu load and a runout-triggered filament change wait
+        // for filament on an XL, so this is where the feeder has to do the
+        // pushing. It feeds all the way to the extruder sensor; the state
+        // machine then moves on by itself.
+        if (!autofeeder_assist_push(LogicalFilamentSensor::extruder)) {
+            return;
+        }
+#endif
+
         // With extruder MMU rework, we gotta assist the user with inserting the filament
         // BFW-5134
         if (settings.extruder_mmu_rework) {
@@ -472,7 +482,16 @@ void Pause::filament_push_ask_process(Response response) {
         const bool side_fs_empty = FSensors_instance().no_filament_surely(LogicalFilamentSensor::side);
         const bool extruder_fs_not_working = !FSensors_instance().is_working(LogicalFilamentSensor::extruder);
 
-        if (response == Response::Continue || is_mmu_rework_and_has_filament) {
+#if HAS_AUTOFEEDER()
+        // The feeder already pushed the filament into the extruder, so there is
+        // nothing for the user to confirm - this is what makes a runout during
+        // a print recover without anybody standing at the printer.
+        const bool autofeeder_delivered = autofeeder_load_succeeded && has_filament;
+#else
+        constexpr bool autofeeder_delivered = false;
+#endif
+
+        if (response == Response::Continue || is_mmu_rework_and_has_filament || autofeeder_delivered) {
             set(LoadState::load_to_gears);
         } else if (!is_unstoppable() && side_fs_empty && extruder_fs_not_working) { // We got to this state because extruder sensor is not working and side sensor triggered autoload (if now sideFS is empty we exit out)
             set(LoadState::stop);
@@ -488,7 +507,7 @@ bool Pause::autofeeder_has_channel() const {
     return instance().is_connected() && channel < instance().channel_count();
 }
 
-bool Pause::autofeeder_assist_load() {
+bool Pause::autofeeder_assist_push(LogicalFilamentSensor target_sensor) {
     using namespace buddy::autofeeder;
 
     if (!autofeeder_has_channel()) {
@@ -517,10 +536,18 @@ bool Pause::autofeeder_assist_load() {
     }
 
     const FeedResult result = autofeeder_operation.step(
-        ticks_ms(), FSensors_instance().has_filament_surely(LogicalFilamentSensor::side));
+        ticks_ms(), FSensors_instance().has_filament_surely(target_sensor));
 
     if (!is_finished(result)) {
-        // Keep waiting in this state while the feeder pushes.
+        // Keep waiting in this state while the feeder pushes. Turn the extruder
+        // along with it so that the gears catch the filament the moment it
+        // arrives, the same way assist_insertion does for a hand-fed load.
+        if (target_sensor == LogicalFilamentSensor::extruder) {
+    #if ENABLED(PREVENT_COLD_EXTRUSION)
+            AutoRestore ar_ce(thermalManager.allow_cold_extrude, true);
+    #endif
+            mapi::extruder_schedule_turning(FILAMENT_CHANGE_SLOW_LOAD_FEEDRATE, 0.1f);
+        }
         return false;
     }
 
@@ -538,6 +565,7 @@ bool Pause::autofeeder_assist_load() {
         return false;
     }
 
+    autofeeder_load_succeeded = true;
     return true;
 }
 #endif
@@ -552,7 +580,9 @@ void Pause::await_filament_process([[maybe_unused]] Response response) {
     }
 
 #if HAS_AUTOFEEDER()
-    if (!autofeeder_assist_load()) {
+    // This state is only reached on an MMU-reworked extruder or a printer
+    // without human interactions; there the side sensor ends the push.
+    if (!autofeeder_assist_push(LogicalFilamentSensor::side)) {
         return;
     }
 #endif
@@ -600,8 +630,19 @@ void Pause::assist_insertion_process([[maybe_unused]] Response response) {
         return;
     }
 
-    // Load for at least 40 seconds before giving up.
-    if (ticks_diff(ticks_ms(), start_time_ms) > 40000) { /*Move for at least 40 seconds before giving up*/
+#if HAS_AUTOFEEDER()
+    // Autoload triggered by the feeder arrives here with the filament still at
+    // the feeder inlet, so the feeder - not the user - is the one delivering it.
+    const bool autofeeder_feeding = autofeeder_has_channel()
+        && buddy::autofeeder::instance().status(settings.GetExtruder()).filament_at_inlet;
+#else
+    constexpr bool autofeeder_feeding = false;
+#endif
+
+    // Load for at least 40 seconds before giving up. Pushing a full tube from
+    // the feeder inlet takes longer than reaching over from the side sensor.
+    const uint32_t give_up_after_ms = autofeeder_feeding ? 120'000 : 40'000;
+    if (ticks_diff(ticks_ms(), start_time_ms) > static_cast<int32_t>(give_up_after_ms)) {
         /*
          * Unstoppable processes should not be stopped. Neither by user, nor printer on itself without any serious failure.
          * The branch used here ensures the printer remains in an infinite loop, waiting in an alert state until the filament is properly loaded—an expected behavior for the printer.
@@ -611,11 +652,20 @@ void Pause::assist_insertion_process([[maybe_unused]] Response response) {
         return;
     }
 
-    // if filament is removed from side FS, stop too.
-    if (FSensors_instance().no_filament_surely(LogicalFilamentSensor::side)) {
+    // if filament is removed from side FS, stop too - unless the feeder is
+    // pushing, in which case the filament has not reached the side sensor yet.
+    if (!autofeeder_feeding && FSensors_instance().no_filament_surely(LogicalFilamentSensor::side)) {
         set(LoadState::unload_finish_or_change);
         return;
     }
+
+#if HAS_AUTOFEEDER()
+    // The feeder pushes towards the extruder and turns the extruder along with
+    // it, so the hand-fed assistance below is skipped while it works.
+    if (autofeeder_feeding && !autofeeder_assist_push(LogicalFilamentSensor::extruder)) {
+        return;
+    }
+#endif
 
 #if ENABLED(PREVENT_COLD_EXTRUSION)
     AutoRestore<bool> CE(thermalManager.allow_cold_extrude);
@@ -1240,6 +1290,7 @@ bool Pause::invoke_loop() {
 #if HAS_AUTOFEEDER()
     autofeeder_operation.abort();
     autofeeder_load_done = false;
+    autofeeder_load_succeeded = false;
 #endif
 
     set(LoadState::start);

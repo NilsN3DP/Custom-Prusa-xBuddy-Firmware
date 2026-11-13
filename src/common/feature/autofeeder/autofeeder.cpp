@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstring>
 #include <mutex>
+#include <utility>
 
 namespace buddy::autofeeder {
 
@@ -67,6 +68,16 @@ bool AutoFeeder::has_pending_request(uint8_t channel) const {
 
     return channels_[channel].queued.has_value()
         || (in_flight_.has_value() && in_flight_->channel == channel);
+}
+
+bool AutoFeeder::take_inlet_insertion(uint8_t channel) {
+    Lock lock(mutex_);
+
+    if (channel >= max_channels) {
+        return false;
+    }
+
+    return std::exchange(channels_[channel].inlet_insertion_pending, false);
 }
 
 bool AutoFeeder::queue_command(uint8_t channel, Command command, std::span<const uint8_t> payload) {
@@ -228,7 +239,16 @@ void AutoFeeder::handle_response(const DecodedFrame &frame) {
         std::memcpy(&response, frame.payload.data(), sizeof(response));
 
         if (response.channel < max_channels) {
-            channels_[response.channel].status = to_channel_status(response);
+            Channel &channel = channels_[response.channel];
+            const bool had_filament_at_inlet = channel.status.filament_at_inlet;
+
+            channel.status = to_channel_status(response);
+
+            if (channel.status.filament_at_inlet != had_filament_at_inlet) {
+                // Remember a rising edge for autoload; drop it again on the
+                // falling edge so it cannot go stale.
+                channel.inlet_insertion_pending = channel.status.filament_at_inlet;
+            }
         }
         break;
     }

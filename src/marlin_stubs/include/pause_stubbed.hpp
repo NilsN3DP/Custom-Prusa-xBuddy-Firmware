@@ -23,6 +23,7 @@
 
 #if HAS_AUTOFEEDER()
     #include <feature/autofeeder/autofeeder_load.hpp>
+    #include <filament_sensor_types.hpp>
 #endif
 
 #include <utils/progress_mapper.hpp>
@@ -148,6 +149,10 @@ class Pause : public PausePrivatePhase {
     /// The feeder already ran a load to its end during this process; do not
     /// start it over and over while the state machine waits.
     bool autofeeder_load_done = false;
+
+    /// The feeder delivered the filament during this process. Distinguishes a
+    /// feeder-driven load from one the user pushed in by hand.
+    bool autofeeder_load_succeeded = false;
 #endif
 
     // singleton
@@ -228,11 +233,13 @@ private:
     /// Whether a feeder channel exists for the tool being loaded/unloaded.
     bool autofeeder_has_channel() const;
 
-    /// Runs the feeder while the load waits for filament at the side sensor.
+    /// Runs the feeder while the load waits for filament to reach
+    /// \p target_sensor.
+    ///
     /// \returns whether the caller may continue with its own processing
     ///          (false = stay in this state, the feeder is still working or the
     ///          state has already been changed).
-    bool autofeeder_assist_load();
+    bool autofeeder_assist_push(LogicalFilamentSensor target_sensor);
 #endif
     void load_start_process(Response response);
     void filament_push_ask_process(Response response);

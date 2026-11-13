@@ -117,24 +117,59 @@ when it re-issues a feed to raise the drive level.
 
 ## Sequences
 
+### Where the feeder hooks into the load
+
+Which state the XL waits for filament in depends on how the load was started, so
+the feeder is driven from more than one place:
+
+| Started by | `LoadType` | State that waits | Target sensor |
+| --- | --- | --- | --- |
+| Menu load (`M701`) | `load` | `filament_push_ask` | extruder |
+| Runout during a print (`M600`) | `filament_change` | `filament_push_ask` | extruder |
+| Autoload (`M1701`) | `load_to_gears` | `assist_insertion` | extruder |
+| MMU-reworked extruder, or a printer without human interactions | any | `await_filament` | side |
+
+`await_filament` is **not** the state a stock XL waits in: `load_start_process`
+only goes there when `config_store().is_mmu_rework` is set, and the other
+transition into it is compiled out wherever `HAS_HUMAN_INTERACTIONS` is on, which
+includes the XL. Hooking only that state would leave the feeder idle on a normal
+machine.
+
 ### Load
 
-`Pause` reaches `LoadState::await_filament` when the side sensor is empty. From
-there, per `step()` of the Marlin server:
+Per `step()` of the Marlin server, in whichever of those states the load is
+waiting:
 
 1. If no feeder channel exists for the tool, nothing changes — the user pushes the
    filament in by hand as before.
 2. Otherwise the printer waits for the feeder to report filament at the inlet.
 3. It starts a forward feed at 45 % duty to draw the filament into the drive
    wheels, then 70 %, ramping by 10 % every 350 ms up to 100 % while the filament
-   has not arrived.
-4. As soon as the side sensor reports filament, the printer stops the channel.
-   The existing `assist_insertion` → `load_to_gears` → purge sequence takes over
-   unchanged.
+   has not arrived. The extruder is turned along with it so that the gears catch
+   the filament the moment it arrives.
+4. As soon as the target sensor reports filament, the printer stops the channel
+   and the existing `load_to_gears` → purge sequence takes over unchanged. In
+   `filament_push_ask` the printer also skips the "press Continue" prompt when the
+   feeder was the one that delivered — that is what makes a runout recover
+   without anybody standing at the printer.
 5. If the filament leaves the inlet again, the printer goes back to waiting — the
    user can simply push it in once more.
 6. Any other failure raises `WarningType::FilamentLoadingTimeout` and stops the
    load.
+
+While the feeder is pushing, `assist_insertion` does two things differently: an
+empty side sensor is no longer a reason to give up (the filament is coming from
+the inlet, not from there), and the 40-second deadline is raised to 120 seconds,
+because a full tube takes longer than reaching over from the side sensor.
+
+### Autoload
+
+Autoload is normally triggered by the side filament sensor seeing filament
+(`filament_sensors_handler.cpp`). With a feeder the filament never gets there by
+itself, so `take_inlet_insertion()` adds a third trigger: the feeder reporting
+that filament appeared at a channel's inlet, while the extruder is empty. The
+edge is consumed once and is dropped again if the filament leaves the inlet, so a
+printer that was busy at the time cannot be surprised by a stale event later.
 
 ### Unload
 

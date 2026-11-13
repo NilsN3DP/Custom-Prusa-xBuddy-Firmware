@@ -91,6 +91,19 @@ public:
     /// Whether a request for \p channel is queued or in flight.
     bool has_pending_request(uint8_t channel) const;
 
+    /// Consumes the "filament appeared at the inlet" edge of \p channel.
+    ///
+    /// This is the feeder's equivalent of the printer's filament sensors
+    /// reporting an insertion event, and it is what lets autoload start from
+    /// the feeder rather than from the side filament sensor.
+    ///
+    /// The edge is forgotten again when the filament leaves the inlet, so a
+    /// caller that only looks while the printer is idle cannot be surprised by
+    /// a stale event long after the fact.
+    ///
+    /// \returns whether such an edge happened since the last call.
+    bool take_inlet_insertion(uint8_t channel);
+
 private:
     struct QueuedCommand {
         Command command;
@@ -103,6 +116,10 @@ private:
     struct Channel {
         ChannelStatus status;
         std::optional<QueuedCommand> queued;
+
+        /// Set when \p status.filament_at_inlet went from false to true,
+        /// cleared when it goes back to false or when the edge is consumed.
+        bool inlet_insertion_pending = false;
     };
 
     struct InFlight {

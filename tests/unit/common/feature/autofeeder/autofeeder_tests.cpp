@@ -153,6 +153,76 @@ TEST_CASE("autofeeder driver: polls channel status", "[autofeeder]") {
     CHECK(feeder.status(1).filament_at_inlet);
 }
 
+TEST_CASE("autofeeder driver: reports the inlet insertion edge once", "[autofeeder]") {
+    FakeController controller;
+
+    AutoFeeder feeder;
+    feeder.set_transport(&controller);
+
+    uint32_t now = 0;
+    test::run_until(feeder, now, [&] { return feeder.is_connected(); });
+
+    // Nothing inserted yet.
+    test::run_until(feeder, now, [&] { return feeder.status(0).state == ChannelState::idle; });
+    CHECK_FALSE(feeder.take_inlet_insertion(0));
+
+    controller.channels[0].filament_at_inlet = true;
+    test::run_until(feeder, now, [&] { return feeder.status(0).filament_at_inlet; });
+
+    CHECK(feeder.take_inlet_insertion(0));
+
+    // The edge is consumed; it must not fire a second time.
+    CHECK_FALSE(feeder.take_inlet_insertion(0));
+}
+
+TEST_CASE("autofeeder driver: an unconsumed inlet edge goes away with the filament", "[autofeeder]") {
+    FakeController controller;
+
+    AutoFeeder feeder;
+    feeder.set_transport(&controller);
+
+    uint32_t now = 0;
+    test::run_until(feeder, now, [&] { return feeder.is_connected(); });
+
+    controller.channels[0].filament_at_inlet = true;
+    test::run_until(feeder, now, [&] { return feeder.status(0).filament_at_inlet; });
+
+    // The user pulls the filament back out before anybody looked at the edge.
+    controller.channels[0].filament_at_inlet = false;
+    test::run_until(feeder, now, [&] { return !feeder.status(0).filament_at_inlet; });
+
+    CHECK_FALSE(feeder.take_inlet_insertion(0));
+}
+
+TEST_CASE("autofeeder driver: inlet edges are tracked per channel", "[autofeeder]") {
+    FakeController controller;
+    controller.channel_count = 2;
+
+    AutoFeeder feeder;
+    feeder.set_transport(&controller);
+
+    uint32_t now = 0;
+    test::run_until(feeder, now, [&] { return feeder.is_connected(); });
+
+    controller.channels[1].filament_at_inlet = true;
+    test::run_until(feeder, now, [&] { return feeder.status(1).filament_at_inlet; });
+
+    CHECK_FALSE(feeder.take_inlet_insertion(0));
+    CHECK(feeder.take_inlet_insertion(1));
+}
+
+TEST_CASE("autofeeder driver: no inlet edge for a channel that does not exist", "[autofeeder]") {
+    FakeController controller;
+
+    AutoFeeder feeder;
+    feeder.set_transport(&controller);
+
+    uint32_t now = 0;
+    test::run_until(feeder, now, [&] { return feeder.is_connected(); });
+
+    CHECK_FALSE(feeder.take_inlet_insertion(max_channels));
+}
+
 TEST_CASE("autofeeder driver: recovers from a corrupted response", "[autofeeder]") {
     FakeController controller;
 

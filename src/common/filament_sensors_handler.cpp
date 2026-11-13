@@ -6,6 +6,10 @@
  */
 
 #include "filament_sensors_handler.hpp"
+#include <option/has_autofeeder.h>
+#if HAS_AUTOFEEDER()
+    #include <feature/autofeeder/autofeeder.hpp>
+#endif
 #include "bsod.h"
 #include <tasks.hpp>
 #include <logging/log.hpp>
@@ -230,8 +234,18 @@ void FilamentSensors::process_events() {
         const bool side_fs_inserted = side_fs && side_fs->last_event() == IFSensor::Event::filament_inserted;
         const bool side_fs_has_filament = side_fs && side_fs->get_state() == FilamentSensorState::HasFilament;
 
+#if HAS_AUTOFEEDER()
+        // With a feeder the filament never reaches the side sensor by itself -
+        // it waits at the feeder inlet - so that is where autoload has to be
+        // triggered from. The feeder then pushes it the rest of the way.
+        const bool autofeeder_inserted = buddy::autofeeder::instance().take_inlet_insertion(tool_index);
+#else
+        constexpr bool autofeeder_inserted = false;
+#endif
+
         const bool trigger_autoload = (extruder_fs_inserted && (!side_fs_enabled || side_fs_has_filament))
-            || (side_fs_inserted && extruder_fs_no_filament);
+            || (side_fs_inserted && extruder_fs_no_filament)
+            || (autofeeder_inserted && extruder_fs_no_filament);
 
         if (!trigger_autoload
             || has_mmu
